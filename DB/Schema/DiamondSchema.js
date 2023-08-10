@@ -65,7 +65,16 @@ const diamondSchema = new mongoose.Schema({
   Inscription : String,
   Ratio : String ,
   HeightAboveGirdle : String ,
-  StoneType: String,
+  StoneType: {
+    type : String,
+    required : true
+  },
+  labReportComment : {
+    type: String , 
+  } , 
+  natural : {
+    type : Boolean
+  }
 });
 
 const Diamond = mongoose.model('Diamond', diamondSchema);

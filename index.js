@@ -10,10 +10,12 @@ DB_Connection();
 //const worker = new Worker("./multiThreading/updateWorker.js");
 //load Routes 
 const SupplierFeed = require("./Routes/SupplierFeed/SupplierFeed");
+const AdminAuth = require("./Routes/Authentication/admin");
 
 //Routes
 
 app.use("/SupplierFeed" , SupplierFeed);
+app.use("/Auth/Admin" , AdminAuth);
 
 
 //Connection

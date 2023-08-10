@@ -52,6 +52,7 @@ const SchemaMapping = async (fetchedData)=>{
             "depth" : depth,
             "Inscription" : element["Inscription"],
             "Ratio" : ratio,
+            natural : false
         })
     });
     return mappedArray;

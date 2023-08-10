@@ -46,7 +46,8 @@ const SchemaMapping = async (fetchedData)=>{
             "Inscription" : element.INSCRIPTION,
             "Ratio" : element.RATIO,
             "HeightAboveGirdle" : element.HeightAboveGirdle,
-            "StoneType" : "Natural"
+            "StoneType" : "Natural",
+            "natural" : false
 
         })
     });
