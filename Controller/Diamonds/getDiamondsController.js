@@ -1,0 +1,3 @@
+exports.getDiamondsController = (req , res)=>{
+    
+}
