@@ -77,7 +77,11 @@ const diamondSchema = new mongoose.Schema({
   },
   CommissionPer : {
     type : Number
-  }
+  },
+  RetailPrice : {
+    type : Number,
+    default : -1
+}
 });
 
 const Diamond = mongoose.model('Diamond', diamondSchema);

@@ -1,10 +1,13 @@
 const axios = require("axios");
 const DiamondModel = require("../../DB/Schema/DiamondSchema");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const aadata = require("../../aa.json");
+const { parseNumbers } = require("xml2js/lib/processors");
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
+
         const id = new mongoose.Types.ObjectId(parseInt(element["Certificate #"]));
         mappedArray.push({
             _id: id,
@@ -17,11 +20,10 @@ const SchemaMapping = async (fetchedData)=>{
             polish: element.Polish,
             symmetry: element.Symmetry,
             fluorescence: element.Fluor,
-            carat: parseFloat(element.Weight),
-            discountPercent: parseFloat(element.offRaportPercent),
+            carat: parseFloat(element["Weight "]),
+            discountPercent: parseFloat(element.offRaportPercent) || 0,
             pricePerCarat: parseFloat(element["Price/Ct"]),
             amount: parseFloat(element.price),
-            rapRate: parseFloat(element.price) / parseFloat(element.Weight),
             lab: element.Lab,
             measurement: `${element.Length} x ${element.Width} x ${element.Depth}`,
             totalDepthPercent: parseFloat(element["Depth %"]),
@@ -45,21 +47,26 @@ const SchemaMapping = async (fetchedData)=>{
 }
 
 const dataFetching = async (apiLink)=>{
-    axios.get(apiLink).then(async (fetch)=>{
-        const fetchedData = fetch.data.data;
-        if(fetchedData.length === 0){
-            return ;
-        }else{
-        const mappedArray = await SchemaMapping(fetchedData);
-        console.log(mappedArray[0]);
-       await  DiamondModel.create(mappedArray);
-        dataFetching(fetch.data.next_page_url);
-        }
+    // axios.get(apiLink).then(async (fetch)=>{
+    //     const fetchedData = fetch.data.data;
+    //     if(fetchedData.length === 0){
+    //         return ;
+    //     }else{
+    //     const mappedArray = await SchemaMapping(fetchedData);
+    //     console.log(mappedArray[0]);
+    //    await  DiamondModel.create(mappedArray);
+    //     dataFetching(fetch.data.next_page_url);
+    //     }
 
 
-    }).catch((err)=>{
-        console.log(err);
-    })
+    // }).catch((err)=>{
+    //     console.log(err);
+    // })
+
+    const mappedArray = await SchemaMapping(aadata.data);
+    console.log(mappedArray[0]);
+    await  DiamondModel.create(mappedArray);
+
 }
 
 exports.MapData =  async (req , res)=>{

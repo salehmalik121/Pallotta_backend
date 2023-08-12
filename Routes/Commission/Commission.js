@@ -14,12 +14,26 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
     }).catch(err=>{
         console.log(err);
     });
-    await Diamonds.updateMany(body.FilterQuery ,{ $set: { "CommissionPer": body.commissionValue } } ).then(found=>{
-        console.log(found);
-    }).catch(err=>{
-        console.log(err);
-        res.status(500).json(err);
-    })
+    
+    const filteredData = await Diamonds.find(body.FilterQuery);
+
+    console.log(body.commissionValue);
+
+     filteredData.forEach(async(element) => {
+        const retailPrice = element.amount + (body.commissionValue *  element.amount) /100 ;
+        const roundAmount = Math.round(retailPrice/5)*5
+        console.log("value " + roundAmount )
+        await Diamonds.updateOne({"_id" : element._id} , {
+            "RetailPrice" : roundAmount,
+            "CommissionPer" : body.commissionValue
+        }).then(found=>{
+            console.log(found)
+        }).catch(err=>{
+            console.log(err);
+        })
+    });
+
+
     console.log("saved");
     res.status(200).json({});
 })
