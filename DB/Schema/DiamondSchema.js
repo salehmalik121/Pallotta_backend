@@ -74,6 +74,9 @@ const diamondSchema = new mongoose.Schema({
   } , 
   natural : {
     type : Boolean
+  },
+  CommissionPer : {
+    type : Number
   }
 });
 

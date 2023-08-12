@@ -1,6 +1,7 @@
 const axios = require("axios");
 const DiamondModel = require("../../DB/Schema/DiamondSchema");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
@@ -52,7 +53,8 @@ const SchemaMapping = async (fetchedData)=>{
             "depth" : depth,
             "Inscription" : element["Inscription"],
             "Ratio" : ratio,
-            natural : false
+            natural : false,
+            StoneType : "Lab"
         })
     });
     return mappedArray;
@@ -60,7 +62,11 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 
-exports.MapData =  (req , res)=>{
+exports.MapData =  async (req , res)=>{
+
+    await DiamondModel.deleteMany({"source" : "Brahma"});
+    console.log("deleted");
+
     axios.get("http://gi.peacocktech.in/GodhaniImpex.asmx/GetStock?token=PEACO-CKTEC-H2022-PALOT").then(async (fetch)=>{
         const fetchedData = fetch.data.Result;
         const mappedArray = await SchemaMapping(fetchedData);

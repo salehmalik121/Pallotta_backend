@@ -16,6 +16,7 @@ Router.post("/login" , bodyParser.json() , async(req , res , next)=>{
             if (err) {
                 res.status(500).json({"Error" : "Invalid Credentials" , "login" : false})
               } else if (result) {
+                console.log("passed")
                 res.status(200).json({"Message" : "Success" , "login" : true})
               } else {
                 res.status(401).json({"Error" : "Invalid Credentials" , "login" : false})

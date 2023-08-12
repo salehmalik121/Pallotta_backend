@@ -32,8 +32,8 @@ const mongoose = require("mongoose")
                 inscription: element["Inscription #"],
                 diamondImage: element["Diamond Image"],
                 video: element.Video,
-                stoneType: "Lab Created",
-                Natural : false,
+                StoneType: "Lab Created",
+                natural : false,
             });
         });
     
@@ -43,7 +43,10 @@ const mongoose = require("mongoose")
 
 
 
-exports.MapData =  (req , res)=>{
+exports.MapData =  async (req , res)=>{
+    await DiamondModel.deleteMany({"source" : "PureLab"});
+    console.log("deleted");
+
     axios.get("http://api.pld.live/stockshare/CXVZ1-YXDRT-MAVQD-A6468").then(async (fetch)=>{
         const fetchedData = fetch.data;
         const mappedArray = await SchemaMapping(fetchedData);
