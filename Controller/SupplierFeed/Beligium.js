@@ -69,7 +69,9 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 
-exports.MapData =  (req , res)=>{
+exports.MapData =  async(req , res)=>{
+    await DiamondModel.deleteMany({"source" : "Belgium"})
+
     axios.get("https://belgiumdia.com/api/DeveloperAPI?APIKEY=727463ab757f49ef2461d52f9565d4f025b2d3d7e79d").then(async (fetch)=>{
         const fetchedData = fetch.data.Stock;
         const mappedArray = await SchemaMapping(fetchedData);

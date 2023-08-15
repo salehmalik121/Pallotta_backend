@@ -61,6 +61,7 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 exports.MapData = async (req , res)=>{
+    await DiamondModel.deleteMany({"source" : "EcoStar"});
     axios.get("https://api.ecostar.diamonds:9921/api/v1/StockShare?userid=Pallotta&token=AYDL-2UA0-533B-URPZ-GN4X-VVPY-0TEL").then(async (fetch)=>{
         const fetchedData = fetch.data.data;
         const mappedArray = await SchemaMapping(fetchedData);

@@ -51,7 +51,8 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 
-exports.MapData =  (req , res)=>{
+exports.MapData =  async(req , res)=>{
+    await DiamondModel.deleteMany({"source" : "LightGrown"});
     axios.post("https://vaishali.diamx.net/API/StockSearch/?APIToken=c7d00250-03c6-4d49-be33-dd6c751ea89e").then(async (fetch)=>{
         const fetchedData = fetch.data.StoneList;
         const mappedArray = await SchemaMapping(fetchedData);

@@ -81,8 +81,14 @@ const diamondSchema = new mongoose.Schema({
   RetailPrice : {
     type : Number,
     default : -1
-}
+},
+
 });
+
+diamondSchema.index(
+  { 'source': 'text' }, // Wildcard index configuration
+  { name: 'default' } // Name your Atlas Search index
+)
 
 const Diamond = mongoose.model('Diamond', diamondSchema);
 

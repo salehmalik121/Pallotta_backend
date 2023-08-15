@@ -8,7 +8,7 @@ const SchemaMapping = async (fetchedData)=>{
         const id = new mongoose.Types.ObjectId(parseInt(element.REPORT_NO));
         mappedArray.push({
             _id : id,
-            "source" : "jeni",
+            "source" : "Ossam",
             "lotNo" : element.PACKET_NO,
             "stoneId" : element.REPORT_NO,
             "status" : element.STONE_STATUS,
@@ -56,11 +56,13 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 
-exports.MapData =  (req , res)=>{
+exports.MapData =  async(req , res)=>{
+    await DiamondModel.deleteMany({"source" : "Ossam"})
+
     axios.post("http://3.110.23.80/OsamProvideStock.svc/GetStock").then(async (fetch)=>{
         const fetchedData = fetch.data.GetStockResult.Data;
         const mappedArray = await SchemaMapping(fetchedData);
-        console.log(mappedArray[0]);
+        console.log(mappedArray[0])
         DiamondModel.create(mappedArray).then(()=>{
             res.sendStatus(200);
         }).catch(err=>{

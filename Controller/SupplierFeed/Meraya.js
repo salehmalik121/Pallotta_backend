@@ -55,7 +55,8 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 
-exports.MapData =  (req , res)=>{
+exports.MapData =  async(req , res)=>{
+    await DiamondModel.deleteMany({"source" : "Mereya"});
     const data = JSON.stringify({
         "uniqID":8,
         "company":"PALLOTTA JEWELLERS",

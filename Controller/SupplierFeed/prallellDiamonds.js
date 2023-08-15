@@ -61,7 +61,8 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 
-exports.MapData =  (req , res)=>{
+exports.MapData =  async(req , res)=>{
+    await DiamondModel.deleteMany({"source" : "ParallelDiamonds"});
     axios.post("http://www.paralleldiamonds.com/api/getstock?user=yYCmfzrsYkv0jPbFdbfYtQ==&key=vh2E6JUyoL3sN15Cxx5NlebYgjNQFmeIYte9AZA7TVE=").then(async (fetch)=>{
         const fetchedData = fetch.data.toString();
         const parser = new xml2js.Parser();

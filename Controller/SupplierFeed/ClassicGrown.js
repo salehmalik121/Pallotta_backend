@@ -55,7 +55,8 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 
-exports.MapData =  (req , res)=>{
+exports.MapData =  async(req , res)=>{
+    await DiamondModel.deleteMany({"source" : "ClassicGrown"});
     var data = JSON.stringify({
         "action": "diamond_stock_list",
         "email": "info@pallottajewellers.com",

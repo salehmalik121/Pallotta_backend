@@ -11,6 +11,7 @@ const SchemaMapping = async (fetchedData)=>{
         const id = new mongoose.Types.ObjectId(parseInt(element["Certificate #"]));
         mappedArray.push({
             _id: id,
+            stoneId : element["Certificate #"],
             source: "AARush", // Update with your source
             lotNo: element["Lot #"],
             shape: element.Shape,
@@ -62,6 +63,9 @@ const dataFetching = async (apiLink)=>{
     // }).catch((err)=>{
     //     console.log(err);
     // })
+
+
+    await DiamondModel.deleteMany({"source" : "AARush"});
 
     const mappedArray = await SchemaMapping(aadata.data);
     console.log(mappedArray[0]);

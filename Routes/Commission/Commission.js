@@ -8,12 +8,14 @@ const Router = express.Router();
 Router.post("/" , bodyParser.json() , async (req , res , next)=>{
     console.log("called");
     const body = req.body;
+    body.CommissionPer = body.commissionValue;
     console.log(body.FilterQuery);
     await Commission.create(body).then(()=>{
         console.log("saved");
     }).catch(err=>{
         console.log(err);
     });
+    
     
     const filteredData = await Diamonds.find(body.FilterQuery);
 
@@ -36,6 +38,52 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
 
     console.log("saved");
     res.status(200).json({});
+})
+
+
+
+Router.get("/" , async(req  ,res, next)=>{
+    const data = await Commission.find();
+    res.status(200).json(data)
+})
+
+
+
+Router.patch("/" ,bodyParser.json(), async(req , res, next)=>{
+
+    console.log(req.body);
+    const newData = req.body;
+
+    const comId = newData.comId;
+
+    await Commission.updateOne({"_id" : comId} , {"CommissionPer" : newData.NewCom});
+
+    const savedData = await Commission.findById(comId);
+
+    const filteredData = await Diamonds.find(savedData.FilterQuery);
+
+    console.log(filteredData.CommissionPer);
+
+     filteredData.forEach(async(element) => {
+        const retailPrice = element.amount + (savedData.CommissionPer *  element.amount) /100 ;
+        const roundAmount = Math.round(retailPrice/5)*5
+        console.log("value " + roundAmount )
+        Diamonds.updateOne({"_id" : element._id} , {
+            "RetailPrice" : roundAmount,
+            "CommissionPer" : savedData.CommissionPer
+        }).then(found=>{
+            console.log(found)
+        }).catch(err=>{
+            console.log(err);
+        })
+    });
+
+
+    console.log("saved");
+    res.status(200).json({});
+
+    
+
 })
 
 

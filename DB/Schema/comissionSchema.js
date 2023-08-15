@@ -22,7 +22,7 @@ const CommissionSchema = new mongoose.Schema({
         type : Array,
         default : ["D", "E", "F", "G", "H", "I", "J",]
     },
-    SelectedColorArr : {
+    SelectedCelerityArr : {
         type : Array,
         default :["IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2"]
     },
