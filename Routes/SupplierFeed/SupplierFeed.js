@@ -9,6 +9,7 @@ const Mareya = require("../../Controller/SupplierFeed/Meraya");
 const Belgium = require("../../Controller/SupplierFeed/Beligium");
 const ClassicGrown = require("../../Controller/SupplierFeed/ClassicGrown");
 const prallellDiamonds = require("../../Controller/SupplierFeed/prallellDiamonds");
+const BrahmaniDiamonds = require("../../Controller/SupplierFeed/Brahmani");
 const Router = express.Router();
 
 Router.get("/Jeni" , jeniController.MapData);
@@ -21,5 +22,6 @@ Router.get("/Mareya" , Mareya.MapData);
 Router.get("/Belgium" , Belgium.MapData);
 Router.get("/ClassicGrown" , ClassicGrown.MapData);
 Router.get("/prallellDiamonds" , prallellDiamonds.MapData);
+Router.get("/Brahmani" , BrahmaniDiamonds.MapData);
 
 module.exports = Router

@@ -48,9 +48,10 @@ Router.post("/diamonds" , bodyParser.json() , async (req , res , next)=>{
 
     const query = req.body;
     console.log(query);
-   const data = await Diamonds.find(query).limit(100);
-    console.log("found")
-    res.status(200).json(data)
+    const count = await Diamonds.count(query);
+    const data = await Diamonds.find(query).limit(100);
+    console.log(count)
+    res.status(200).json({data , count})
 })
 
 
