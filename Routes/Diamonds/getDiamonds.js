@@ -56,6 +56,14 @@ Router.post("/diamonds" , bodyParser.json() , async (req , res , next)=>{
 
 
 
+Router.get("/diamonds/sort/:path", async(req , res ,next)=>{
+  
+  const path = req.params.path;
+  const data = await Diamonds.find().sort({"carat" : path}).allowDiskUse(true).limit(25);
+  res.status(200).json(data)
+})
+
+
 Router.get('/data-stream', (req, res) => {
     const app = express();
     const server = http.createServer(app);
