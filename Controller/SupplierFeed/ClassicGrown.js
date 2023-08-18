@@ -62,7 +62,7 @@ exports.MapData =  async(req , res)=>{
         "email": "info@pallottajewellers.com",
         "password": "276442530",
         "startindex": "0",
-        "shape": "ROUND",
+        "shape": "",
         "carat ": "",
         "color": "",
         "clarity": "",
