@@ -6,7 +6,9 @@ const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
         const id = new mongoose.Types.ObjectId(parseInt(element.Lab_Report_No));
-        mappedArray.push({
+
+
+        const mappedObj = {
             _id: id,
             source: "Brahmani",
             lotNo: element.Stone_NO,
@@ -51,7 +53,14 @@ const SchemaMapping = async (fetchedData)=>{
             labReportComment: element.Lab_Report_Comment,
             CommissionPer: element.Commission_Per || 0,
             RetailPrice: element.RetailPrice || -1
-        })
+        }
+
+        
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+
+        }else{
+            mappedArray.push(mappedObj);
+        }
     });
     return mappedArray;
 }

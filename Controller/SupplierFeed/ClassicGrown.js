@@ -6,7 +6,8 @@ const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
         const id = new mongoose.Types.ObjectId(parseInt(element.CERTIFICATE_NO));
-        mappedArray.push({
+
+        const mappedObj = {
             _id: id,
             source: "ClassicGrown",
             lotNo: element.LOAT_NO,
@@ -48,7 +49,14 @@ const SchemaMapping = async (fetchedData)=>{
             labReportComment: "", // You can add this field according to your needs
             natural: false,
 
-        })
+        }
+
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+
+        }else{
+            mappedArray.push(mappedObj);
+        }
+ 
     });
     return mappedArray;
 }

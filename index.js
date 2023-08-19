@@ -12,6 +12,15 @@ const port = process.env.port || 3000
 
 
 
+    app.use((req, res, next) => {
+        res.setHeader('Access-Control-Allow-Origin', 'https://www.pallotta.co');
+        // You can include more headers if needed
+        res.setHeader('Access-Control-Allow-Methods', '*');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        next();
+      });
+
 //const worker = new Worker("./multiThreading/updateWorker.js");
 app.use(cors());
 //load Routes 

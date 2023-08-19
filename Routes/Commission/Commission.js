@@ -10,11 +10,17 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
     const body = req.body;
     body.CommissionPer = body.commissionValue;
     console.log(body.FilterQuery);
-    await Commission.create(body).then(()=>{
-        console.log("saved");
-    }).catch(err=>{
-        console.log(err);
-    });
+
+    const isThere = await Commission.find({"FilterQuery" : body.filteredQuery});
+    if(isThere.length === 0){
+        await Commission.create(body).then(()=>{
+            console.log("saved");
+        }).catch(err=>{
+            console.log(err);
+        });
+    }
+
+
     
     
     const filteredData = await Diamonds.find(body.FilterQuery);

@@ -9,7 +9,8 @@ const mongoose = require("mongoose")
         await fetchedData.forEach(element => {
             const id = new mongoose.Types.ObjectId(parseInt(element["Certificate #"])); // Generating a new ObjectId for each element.
     
-            mappedArray.push({
+
+            const mappedObj = {
                 _id: id,
                 source: "PureLab",
                 lotNo: element["Lot #"],
@@ -34,7 +35,14 @@ const mongoose = require("mongoose")
                 video: element.Video,
                 StoneType: "Lab Created",
                 natural : false,
-            });
+            }
+
+                   
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+            
+        }else{
+            mappedArray.push(mappedObj);
+        }
         });
     
         return mappedArray;

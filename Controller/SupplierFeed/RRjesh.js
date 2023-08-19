@@ -6,7 +6,8 @@ const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
         const id = new mongoose.Types.ObjectId(parseInt(element.cert_num));
-        mappedArray.push({
+
+        const mappedObj = {
             _id: id,
             source: "RRajesh",
             lotNo: element.stock_num,
@@ -57,7 +58,14 @@ const SchemaMapping = async (fetchedData)=>{
             natural: true, // Assuming that "Natural_Type" is not provided and all stones are natural
             CommissionPer: 0, // Not provided in the data
             RetailPrice: -1 // Default value as per the schema
-        })
+        }
+        
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+            
+        }else{
+            mappedArray.push(mappedObj);
+        }
+        
     });
     return mappedArray;
 }

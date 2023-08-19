@@ -10,50 +10,57 @@ const SchemaMapping = async (fetchedData)=>{
         const width = parseInt(element.Measurements.split("-")[1].split("*")[0]);
         const depth = parseInt(element.Measurements.split("-")[1].split("*")[1]);
         const Ratio = length / width;
-        mappedArray.push(
-            {
-                _id: id,
-                source: "EcoStar",
-                lotNo : element["Stock #"],
-                stoneId: element["Certificate #"],
-                status: element.Availability,
-                image: element["Diamond Image"],
-                video: element["Diamond Video"],
-                shape: element.Shape,
-                color: element.Color,
-                clarity: element.Clarity,
-                cut: element.CutGrade,
-                polish: element.Polish,
-                symmetry: element.Symmetry,
-                fluorescence: element["Fluorescence Intensity"],
-                carat: element.Weight,
-                pricePerCarat: element["$/Ct"],
-                amount: element["Total $"],
-                rapRate: element["Rap-Price"],
-                lab: element.Lab,
-                measurement: element.Measurements,
-                totalDepthPercent: element["Depth %"],
-                tablePercent: element["Table %"],
-                shade: element.Shade,
-                eyeClean: "100%", // Just an example; adjust this as needed
-                keyToSymbols: element["Key To Symbols"],
-                milky: element.Milky,
-                crownHeight: element["Crowhn Height"],
-                crownAngle: element["Crown Angle"],
-                pavilionHeight: element["Pavilion Depth"],
-                pavilionAngle: element["Pavilion Angle"],
-                location: `${element.City}, ${element.State}, ${element.Country}`,
-                length: length, // Adjust this property name as needed
-                width: width, // Adjust this property name as needed
-                depth: depth, // Adjust this property name as needed
-                Inscription: element["Laser Inscription"],
-                Ratio: Ratio,
-                HeightAboveGirdle: element.HeightAboveGirdle,
-                StoneType: element["Stone Type"],
-                labReportComment: element["Member Comments"],
-                natural: false,
-            }
-        )
+
+
+        const mappedObj =             {
+            _id: id,
+            source: "EcoStar",
+            lotNo : element["Stock #"],
+            stoneId: element["Certificate #"],
+            status: element.Availability,
+            image: element["Diamond Image"],
+            video: element["Diamond Video"],
+            shape: element.Shape,
+            color: element.Color,
+            clarity: element.Clarity,
+            cut: element.CutGrade,
+            polish: element.Polish,
+            symmetry: element.Symmetry,
+            fluorescence: element["Fluorescence Intensity"],
+            carat: element.Weight,
+            pricePerCarat: element["$/Ct"],
+            amount: element["Total $"],
+            rapRate: element["Rap-Price"],
+            lab: element.Lab,
+            measurement: element.Measurements,
+            totalDepthPercent: element["Depth %"],
+            tablePercent: element["Table %"],
+            shade: element.Shade,
+            eyeClean: "100%", // Just an example; adjust this as needed
+            keyToSymbols: element["Key To Symbols"],
+            milky: element.Milky,
+            crownHeight: element["Crowhn Height"],
+            crownAngle: element["Crown Angle"],
+            pavilionHeight: element["Pavilion Depth"],
+            pavilionAngle: element["Pavilion Angle"],
+            location: `${element.City}, ${element.State}, ${element.Country}`,
+            length: length, // Adjust this property name as needed
+            width: width, // Adjust this property name as needed
+            depth: depth, // Adjust this property name as needed
+            Inscription: element["Laser Inscription"],
+            Ratio: Ratio,
+            HeightAboveGirdle: element.HeightAboveGirdle,
+            StoneType: element["Stone Type"],
+            labReportComment: element["Member Comments"],
+            natural: false,
+        }
+
+
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+
+        }else{
+            mappedArray.push(mappedObj);
+        }
     });
     return mappedArray;
 }

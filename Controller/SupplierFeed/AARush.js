@@ -9,7 +9,8 @@ const SchemaMapping = async (fetchedData)=>{
     await fetchedData.forEach(element => {
 
         const id = new mongoose.Types.ObjectId(parseInt(element["Certificate #"]));
-        mappedArray.push({
+
+        const mappedObj = {
             _id: id,
             stoneId : element["Certificate #"],
             source: "AARush", // Update with your source
@@ -42,39 +43,64 @@ const SchemaMapping = async (fetchedData)=>{
             natural: false,
             image : element["Diamond Image"],
             video : element.Video
-        })
+        }
+
+
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+
+        }else{
+            mappedArray.push(mappedObj);
+        }
+       
+
     });
+
+    
     return mappedArray;
 }
 
 const dataFetching = async (apiLink)=>{
-    // axios.get(apiLink).then(async (fetch)=>{
-    //     const fetchedData = fetch.data.data;
-    //     if(fetchedData.length === 0){
-    //         return ;
-    //     }else{
-    //     const mappedArray = await SchemaMapping(fetchedData);
-    //     console.log(mappedArray[0]);
-    //    await  DiamondModel.create(mappedArray);
-    //     dataFetching(fetch.data.next_page_url);
-    //     }
 
 
-    // }).catch((err)=>{
-    //     console.log(err);
-    // })
+    const userName = "pallotta_rishab@labdiamondinventory.com";
+    const password = "hQPlQ@za#I1@d9g&b";
+
+    const base64Credentials = Buffer.from(`${userName}:${password}`).toString('base64');
+
+    const headers = {
+        'Authorization': `Basic ${base64Credentials}`
+      };
+    axios.get(apiLink , {
+        headers
+    }).then(async (fetch)=>{
+        const fetchedData = fetch.data.data;
+        if(fetchedData.length === 0 || fetch.data.next_page_url === null ){
+            return ;
+        }else{
+        const mappedArray = await SchemaMapping(fetchedData);
+        console.log(mappedArray[0]);
+       await  DiamondModel.create(mappedArray);
+        dataFetching(fetch.data.next_page_url);
+        }
 
 
-    await DiamondModel.deleteMany({"source" : "AARush"});
+    }).catch((err)=>{
+        console.log(err);
+    })
 
-    const mappedArray = await SchemaMapping(aadata.data);
-    console.log(mappedArray[0]);
-    await  DiamondModel.create(mappedArray);
+
+
+
+    // const mappedArray = await SchemaMapping(aadata.data);
+    // console.log(mappedArray[0]);
+    // await  DiamondModel.create(mappedArray);
 
 }
 
 exports.MapData =  async (req , res)=>{
 
+
+    await DiamondModel.deleteMany({"source" : "AARush"});
    await dataFetching("https://labdiamondinventory.com/api/inventory/6620b8c37cbf77");
    res.status(200);
 

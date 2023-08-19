@@ -46,4 +46,32 @@ bcrypt.hash(plaintextPassword, saltRounds, (err, hashedPassword) => {
 
 })
 
+
+Router.patch("/" , bodyParser.json() , async(req , res , next)=>{
+  const saltRounds = 10; 
+  console.log("callled");
+  const body = req.body
+  const plaintextPassword = body.pass; 
+  
+  bcrypt.hash(plaintextPassword, saltRounds, (err, hashedPassword) => {
+      console.log(hashedPassword)
+    if (err) {
+      console.error('Error hashing password:', err);
+    } else {
+
+      const data = AdminModel.find();
+      const id = data[0]._id
+
+      AdminModel.findByIdAndUpdate(id , {
+        "email" : body.email,
+        "encryptedPassword" : hashedPassword
+      })
+      res.status(200).json({hashedPassword});
+    }
+  });
+  
+  })
+
+
+
 module.exports = Router;

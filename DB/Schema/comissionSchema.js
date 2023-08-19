@@ -26,8 +26,14 @@ const CommissionSchema = new mongoose.Schema({
         type : Array,
         default :["IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2"]
     },
-    MinSize : Number,
-    MaxSize : Number,
+    MinSize : {
+        type : Number , 
+        default : 0.25
+    },
+    MaxSize : {
+        type : Number , 
+        default : 25
+    },
     Natural: Boolean,
     StockNumber : String,
     LabCert : String,

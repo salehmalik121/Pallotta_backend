@@ -20,7 +20,9 @@ const SchemaMapping = async (fetchedData)=>{
         const depth = element.Measurements.split("X")[2];
 
         const id = new mongoose.Types.ObjectId(parseInt(certNumber));
-        mappedArray.push({
+
+
+        const mappedObj = {
             _id: id,
             source: "Belgium",
             lotNo: element.Stock_No,
@@ -62,7 +64,14 @@ const SchemaMapping = async (fetchedData)=>{
             HeightAboveGirdle: element.HEIGHT_ABOVE,
             StoneType: element.Diamond_Type,
             natural: element.Diamond_Type === "Natural Diamond"
-        })
+        }
+
+        
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+
+        }else{
+            mappedArray.push(mappedObj);
+        }
     });
     return mappedArray;
 }

@@ -15,7 +15,8 @@ const SchemaMapping = async (fetchedData)=>{
         const width = element["Measurements"].split("x")[1];
         const depth = element["Measurements"].split("x")[2];
         const ratio = length/width;
-        mappedArray.push({
+
+        const mappedObj = {
             _id : id,
             "source" : "Brahma",
             "lotNo" : element["Stock #"],
@@ -55,7 +56,14 @@ const SchemaMapping = async (fetchedData)=>{
             "Ratio" : ratio,
             natural : false,
             StoneType : "Lab"
-        })
+        }
+
+
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+
+        }else{
+            mappedArray.push(mappedObj);
+        }
     });
     return mappedArray;
 }
