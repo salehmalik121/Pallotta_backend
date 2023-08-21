@@ -9,8 +9,13 @@ const SchemaMapping = async (fetchedData)=>{
         const id = new mongoose.Types.ObjectId(parseInt(element["Certificate #"]));
         
         const weight = parseFloat(element["Weight"]); 
+        const disc = parseFloat(element["GPer"].split('-')[1]);
+        const discPrice = (parseFloat(element["Org Rap"]) * disc) / 100;
+        const pricePC = parseInt(element["Org Rap"]) - discPrice;
+        const price = pricePC * weight;
+        const roundAmount = Math.round(price/5)*5
         const rapNetPrice = parseFloat(element["RapNet Price"])
-        const pricePerCarat = rapNetPrice / weight;
+        const pricePerCarat = pricePC;
         const length = element["Measurements"].split("x")[0];
         const width = element["Measurements"].split("x")[1];
         const depth = element["Measurements"].split("x")[2];
@@ -34,7 +39,7 @@ const SchemaMapping = async (fetchedData)=>{
             "carat" : element["Weight"],
             "discountPercent" : element["Cash Price Discount %"],
             "pricePerCarat" : pricePerCarat,
-            "amount" : element["RapNet Price"],
+            "amount" : roundAmount,
             "rapRate" : element["Org Rap"],
             "lab" : element["Lab"],
             "measurement" : element["Measurements"],

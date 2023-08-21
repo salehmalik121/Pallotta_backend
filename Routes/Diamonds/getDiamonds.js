@@ -8,7 +8,7 @@ const Router = express.Router();
 Router.get("/diamonds" , async (req , res , next)=>{
     const query = req.query;
     const pageNumber = query.pageNumber || 1;
-    const numberOfEntries =  25;
+    const numberOfEntries =  100;
     const queryMapper = {
 
     }
@@ -59,7 +59,7 @@ Router.post("/diamonds" , bodyParser.json() , async (req , res , next)=>{
 Router.get("/diamonds/sort/:path", async(req , res ,next)=>{
   
   const path = req.params.path;
-  const data = await Diamonds.find().sort({"carat" : path}).allowDiskUse(true).limit(25);
+  const data = await Diamonds.find().sort({"carat" : path}).allowDiskUse(true).limit(100);
   res.status(200).json(data)
 })
 

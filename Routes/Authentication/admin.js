@@ -47,31 +47,38 @@ bcrypt.hash(plaintextPassword, saltRounds, (err, hashedPassword) => {
 })
 
 
-Router.patch("/" , bodyParser.json() , async(req , res , next)=>{
-  const saltRounds = 10; 
-  console.log("callled");
-  const body = req.body
-  const plaintextPassword = body.pass; 
-  
-  bcrypt.hash(plaintextPassword, saltRounds, (err, hashedPassword) => {
-      console.log(hashedPassword)
-    if (err) {
-      console.error('Error hashing password:', err);
-    } else {
+Router.patch("/", bodyParser.json(), async (req, res, next) => {
+  try {
+    const saltRounds = 10;
+    
+    // Extract the request body
+    const body = req.body;
+    const plaintextPassword = body.pass;
+    
+    // Hash the plaintext password using bcrypt
+    bcrypt.hash(plaintextPassword, saltRounds, async (err, hashedPassword) => {
+      if (err) {
+        console.error('Error hashing password:', err);
+        return res.status(500).json({ "error": "Internal server error" });
+      } else {
+        // Retrieve the admin data
+        const data = await AdminModel.find();
+        const id = data[0]._id;
 
-      const data = AdminModel.find();
-      const id = data[0]._id
+        // Update the admin's email and encrypted password
+        await AdminModel.findByIdAndUpdate(id, {
+          "email": body.email,
+          "encryptedPassword": hashedPassword
+        });
 
-      AdminModel.findByIdAndUpdate(id , {
-        "email" : body.email,
-        "encryptedPassword" : hashedPassword
-      })
-      res.status(200).json({hashedPassword});
-    }
-  });
-  
-  })
-
+        return res.status(200).json({ "msg": "Update successful" });
+      }
+    });
+  } catch (error) {
+    console.error('An error occurred:', error);
+    return res.status(500).json({ "error": "Internal server error" });
+  }
+});
 
 
 module.exports = Router;
