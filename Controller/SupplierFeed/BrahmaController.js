@@ -37,7 +37,7 @@ const SchemaMapping = async (fetchedData)=>{
             "symmetry" : element["Symmetry"],
             "fluorescence" : element["Fluorescence Intensity"],
             "carat" : element["Weight"],
-            "discountPercent" : element["Cash Price Discount %"],
+            "discountPercent" : element["GPer"],
             "pricePerCarat" : pricePerCarat,
             "amount" : roundAmount,
             "rapRate" : element["Org Rap"],

@@ -26,6 +26,7 @@ const SchemaMapping = async (fetchedData)=>{
             cut: element.CutGrade,
             polish: element.Polish,
             symmetry: element.Symmetry,
+            discountPercent : element["Rap%"],
             fluorescence: element["Fluorescence Intensity"],
             carat: element.Weight,
             pricePerCarat: element["$/Ct"],

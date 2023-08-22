@@ -6,14 +6,13 @@ const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
         const certNo = element.CertificateLink;
-        const regex = /\/(\d+)\.pdf$/;
-        const match = certNo.match(regex);
-        let certNumber;
-        if (match && match[1]) {
-             certNumber = match[1];
-        }
+        const div = certNo.split("/");
+        const subDiv = div[div.length - 1].split(".")[0]
+        let certNumber = subDiv;
 
-        const pricePerCaret = element.Buy_Price / element.Weight;
+        const price = parseInt(element.Buy_Price) * parseFloat(element.Weight)
+        const roundAmount = Math.round(price/5)*5
+        const pricePerCaret = element.Buy_Price;
 
         const length = element.Measurements.split("X")[0];
         const width = element.Measurements.split("X")[1];
@@ -40,7 +39,7 @@ const SchemaMapping = async (fetchedData)=>{
             carat: parseFloat(element.Weight),
             discountPercent: element.Buy_Price_Discount_PER, // Set default discount percent if not provided in JSON
             pricePerCarat: pricePerCaret, // Set default price per carat if not provided in JSON
-            amount: element.Buy_Price, // Set default amount if not provided in JSON
+            amount: roundAmount, // Set default amount if not provided in JSON
             rapRate: parseFloat(element.Rap_Price),
             lab: element.Lab,
             measurement: element.Measurements,
