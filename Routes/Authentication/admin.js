@@ -81,4 +81,21 @@ Router.patch("/", bodyParser.json(), async (req, res, next) => {
 });
 
 
+Router.patch("/email" , bodyParser.json() , async(req , res , next)=>{
+  const newEmail = req.body;
+  const data = await Admin.find();
+  const id = data[0]._id;
+  
+
+  AdminModel.findOneAndUpdate({"_id" : id} , {"email" : newEmail}).then(msg=>{
+    console.log(msg);
+    res.status(200).json({"msg" : "updates"})
+  }).catch(err=>{
+    console.log(err);
+    res.status(500).json({"msg" : "internal Server Error"})
+  })
+
+})
+
+
 module.exports = Router;
