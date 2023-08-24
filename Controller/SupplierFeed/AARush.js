@@ -46,10 +46,28 @@ const SchemaMapping = async (fetchedData)=>{
         }
 
 
-        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25 ){
 
         }else{
-            mappedArray.push(mappedObj);
+
+            const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
+            const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J"]
+            const AcceptedClarity = ["SI1", "si1" , "SI2" , "si2" , "VS2", "vs2" , "VS1", "vs1" , "VVS2" , "vvs2" , "VVS1" , "vvs1" , "IF" , "if" ]
+            const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX" , "excellent" , "very good" , "good" , "ideal"]
+
+
+            
+           
+            if (
+                AcceptedShape.includes(mappedObj.shape) &&
+                AcceptedColor.includes(mappedObj.color) &&
+                AcceptedClarity.includes(mappedObj.clarity) &&
+                AcceptedCPS.includes(mappedObj.cut) && 
+                AcceptedCPS.includes(mappedObj.polish) && 
+                AcceptedCPS.includes(mappedObj.symmetry)
+              ) {
+                mappedArray.push(mappedObj);
+              }
         }
        
 

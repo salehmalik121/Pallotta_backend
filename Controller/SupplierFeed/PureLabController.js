@@ -8,8 +8,8 @@ const mongoose = require("mongoose")
     
         await fetchedData.forEach(element => {
             const id = new mongoose.Types.ObjectId(parseInt(element["Certificate #"])); // Generating a new ObjectId for each element.
-    
-
+            const amount = element["Price/Ct"] * element["Weight"]
+            const roundAmount = Math.round(amount/5)*5
             const mappedObj = {
                 _id: id,
                 source: "PureLab",
@@ -23,9 +23,9 @@ const mongoose = require("mongoose")
                 symmetry: element.Symmetry,
                 fluorescence: element.Fluor,
                 carat: element.Weight,
-                discountPercent: element["% Off RAP"],
+                discountPercent: "-" + element["% Off RAP"],
                 pricePerCarat: element["Price/Ct"],
-                amount: element["Rapaport Price"],
+                amount: roundAmount,
                 lab: element.Lab,
                 measurement: `${element.Length} x ${element.Width} x ${element.Depth}`,
                 totalDepthPercent: element["Depth %"],
@@ -38,12 +38,35 @@ const mongoose = require("mongoose")
             }
 
                    
-        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
-            
-        }else{
-            mappedArray.push(mappedObj);
-        }
-        });
+            if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25 ){
+
+            }else{
+    
+                const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
+                const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J"]
+                const AcceptedClarity = ["SI1" , "SI2" , "VS2" , "VS1" , "VVS2" , "VVS1" , "IF"]
+                const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX"]
+    
+    
+                
+               
+                if (
+                    AcceptedShape.includes(mappedObj.shape) &&
+                    AcceptedColor.includes(mappedObj.color) &&
+                    AcceptedClarity.includes(mappedObj.clarity) &&
+                    AcceptedCPS.includes(mappedObj.cut) && 
+                    AcceptedCPS.includes(mappedObj.polish) && 
+                    AcceptedCPS.includes(mappedObj.symmetry)
+                  ) {
+                    mappedArray.push(mappedObj);
+                  }
+            }
+       
+    
+    
+    }
+        
+        );
     
         return mappedArray;
     }

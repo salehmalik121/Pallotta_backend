@@ -51,10 +51,37 @@ const SchemaMapping = async (fetchedData)=>{
 
         }
 
-        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25){
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25 ){
 
         }else{
-            mappedArray.push(mappedObj);
+
+            const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
+            const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J" , "G"]
+            const AcceptedClarity = ["SI1" , "SI2" , "VS2" , "VS1" , "VVS2" , "VVS1" , "IF"]
+            const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX"]
+
+
+            
+           
+            if (
+                AcceptedShape.includes(mappedObj.shape) &&
+                AcceptedColor.includes(mappedObj.color) &&
+                AcceptedClarity.includes(mappedObj.clarity) &&
+                AcceptedCPS.includes(mappedObj.cut) && 
+                AcceptedCPS.includes(mappedObj.polish) && 
+                AcceptedCPS.includes(mappedObj.symmetry)
+              ) {
+                mappedArray.push(mappedObj);
+              }else{
+                if(AcceptedShape.includes(mappedObj.shape) &&
+                AcceptedClarity.includes(mappedObj.clarity) &&
+                AcceptedCPS.includes(mappedObj.cut) && 
+                AcceptedCPS.includes(mappedObj.polish) && 
+                AcceptedCPS.includes(mappedObj.symmetry)){
+                    mappedObj.source = "Classic Grown Colored"
+                    mappedArray.push(mappedObj);
+                }
+              }
         }
  
     });
