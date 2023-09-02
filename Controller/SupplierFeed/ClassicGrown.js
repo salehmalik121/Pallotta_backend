@@ -92,11 +92,12 @@ const SchemaMapping = async (fetchedData)=>{
 
 exports.MapData =  async(req , res)=>{
     await DiamondModel.deleteMany({"source" : "ClassicGrown"});
+    for(let i =0 ; i<5 ; i++){
     var data = JSON.stringify({
         "action": "diamond_stock_list",
         "email": "info@pallottajewellers.com",
         "password": "276442530",
-        "startindex": "0",
+        "startindex": i*3000,
         "shape": "",
         "carat ": "",
         "color": "",
@@ -142,19 +143,20 @@ exports.MapData =  async(req , res)=>{
       };
 
     axios(config).then(async (fetch)=>{
+        if(fetch.data.CODE == "0"){
+            return;
+        }
         const fetchedData = fetch.data.DATA;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0]);
-        DiamondModel.create(mappedArray).then(()=>{
-            res.sendStatus(200);
-        }).catch(err=>{
-            console.log(err);
-            res.status(500).json(err);
-        })
+        DiamondModel.create(mappedArray);
 
     }).catch((err)=>{
         console.log(err);
     })
+}
+
+res.status(200);
 }
 
 

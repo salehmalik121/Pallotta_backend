@@ -46,12 +46,49 @@ Router.get("/diamonds" , async (req , res , next)=>{
 Router.post("/diamonds" , bodyParser.json() , async (req , res , next)=>{
     
 
+    const params = req.query;
     const query = req.body;
-    console.log(query);
+    const pageNumber = params.pageNumber - 1 || 0;
     const count = await Diamonds.count(query);
-    const data = await Diamonds.find(query).limit(100);
+    const skip = pageNumber * 100;
+
+    if(query.source){
+      query.source = query.source 
+  }
+
+  if(query.natural){
+    query.natural = query.natural === "true" 
+  }
+
+  if(query.stock){
+      query.lotNo = query.stock
+  }
+  if(query.stoneId){
+      query.stoneId = query.stoneId
+  }
+
+  console.log(query);
+
+    // logics
+
+    if(params.sorting === "true"){
+      const direction = params.direction;
+      const sortingParameter = params.sortingParameter
+      if(direction === "asc"){
+        
+        const data = await Diamonds.find(query).sort({ [sortingParameter] : 1}).allowDiskUse(true).skip(skip).limit(100);
+        res.status(200).json({data , count})
+        next()
+      }else{
+        const data = await Diamonds.find(query).sort({ [sortingParameter] : -1}).allowDiskUse(true).skip(skip).limit(100);
+        res.status(200).json({data , count})
+        next()
+      }
+    }else{
+
+    const data = await Diamonds.find(query).skip(pageNumber * 100).limit(100); // data Retrival
     console.log(count)
-    res.status(200).json({data , count})
+    res.status(200).json({data , count})}
 })
 
 

@@ -23,7 +23,7 @@ const SchemaMapping = async (fetchedData)=>{
             symmetry: element.Symmetry,
             fluorescence: element.Fluor,
             carat: parseFloat(element["Weight "]),
-            discountPercent: parseFloat(element.offRaportPercent) || 0,
+            discountPercent: parseFloat(element.offRaportPercent) * 100 || 0,
             pricePerCarat: parseFloat(element["Price/Ct"]),
             amount: parseFloat(element.price),
             lab: element.Lab,
@@ -46,14 +46,14 @@ const SchemaMapping = async (fetchedData)=>{
         }
 
 
-        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.25 || mappedObj.carat > 25 ){
+        if( mappedObj.carat < 0.25 || mappedObj.carat > 25 ){
 
         }else{
 
             const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
-            const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J"]
-            const AcceptedClarity = ["SI1", "si1" , "SI2" , "si2" , "VS2", "vs2" , "VS1", "vs1" , "VVS2" , "vvs2" , "VVS1" , "vvs1" , "IF" , "if" ]
-            const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX" , "excellent" , "very good" , "good" , "ideal"]
+            const AcceptedColor = ["D" , "E" , "F" , "G" , "H" , "I" , "J"]
+            const AcceptedClarity = ["SI1", "si1" , "SI2" , "si2" , "VS2", "vs2" , "VS1", "vs1" , "VVS2" , "vvs2" , "VVS1" , "vvs1" , "IF" , "if" , "fl" ]
+            const AcceptedCPS = ["E" , "VG" , "G" , "GD" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX" , "excellent" , "very good" , "good" , "ideal"]
 
 
             

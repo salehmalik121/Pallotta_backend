@@ -31,7 +31,7 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
         const retailPrice = element.amount + (body.commissionValue *  element.amount) /100 ;
         const roundAmount = Math.round(retailPrice/5)*5
         console.log("value " + roundAmount )
-        await Diamonds.updateOne({"_id" : element._id} , {
+         Diamonds.updateOne({"_id" : element._id} , {
             "RetailPrice" : roundAmount,
             "CommissionPer" : body.commissionValue
         }).then(found=>{

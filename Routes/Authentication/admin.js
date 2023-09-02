@@ -87,13 +87,47 @@ Router.patch("/email" , bodyParser.json() , async(req , res , next)=>{
   const id = data[0]._id;
   
 
-  AdminModel.findOneAndUpdate({"_id" : id} , {"email" : newEmail}).then(msg=>{
+  AdminModel.findOneAndUpdate({"_id" : id} , {"email" : newEmail.email}).then(msg=>{
     console.log(msg);
     res.status(200).json({"msg" : "updates"})
   }).catch(err=>{
     console.log(err);
     res.status(500).json({"msg" : "internal Server Error"})
   })
+
+})
+
+
+Router.patch("/password" , bodyParser.json() , async(req , res , next)=>{
+  try {
+    const saltRounds = 10;
+    
+    // Extract the request body
+    const body = req.body;
+    const plaintextPassword = body.pass;
+    
+    // Hash the plaintext password using bcrypt
+    bcrypt.hash(plaintextPassword, saltRounds, async (err, hashedPassword) => {
+      if (err) {
+        console.error('Error hashing password:', err);
+        return res.status(500).json({ "error": "Internal server error" });
+      } else {
+        // Retrieve the admin data
+        const data = await AdminModel.find();
+        const id = data[0]._id;
+
+        // Update the admin's email and encrypted password
+        await AdminModel.findByIdAndUpdate(id, {
+          "encryptedPassword": hashedPassword
+        });
+
+        return res.status(200).json({ "msg": "Update successful" });
+      }
+    });
+  } catch (error) {
+    console.error('An error occurred:', error);
+    return res.status(500).json({ "error": "Internal server error" });
+  }
 
 })
 
