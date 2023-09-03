@@ -43,7 +43,12 @@ const CommissionSchema = new mongoose.Schema({
     },
     CommissionPer : {
         type : Number
-    }
+    },
+    StoneType : {
+        type : Array,
+        default : ["Lab" , "Natural"],
+    },
+
 });
 
 const Commission = mongoose.model('Commission', CommissionSchema);

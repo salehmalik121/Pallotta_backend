@@ -6,12 +6,13 @@ const Diamonds = require("../../DB/Schema/DiamondSchema");
 const Router = express.Router();
 
 Router.post("/" , bodyParser.json() , async (req , res , next)=>{
-    console.log("called");
     const body = req.body;
     body.CommissionPer = body.commissionValue;
+    console.log("commission called");
     console.log(body.FilterQuery);
 
     const isThere = await Commission.find({"FilterQuery" : body.filteredQuery});
+    console.log("saved data: " + isThere);
     if(isThere.length === 0){
         await Commission.create(body).then(()=>{
             console.log("saved");
@@ -49,7 +50,13 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
 
 
 Router.get("/" , async(req  ,res, next)=>{
-    const data = await Commission.find();
+    const filter = {}
+    if(req.query.stoneType){
+        filter.stoneType = {
+            $in : [req.query.stoneType]
+        }
+    }
+    const data = await Commission.find(filter);
     res.status(200).json(data)
 })
 
@@ -91,6 +98,37 @@ Router.patch("/" ,bodyParser.json(), async(req , res, next)=>{
     
 
 })
+
+
+
+Router.delete("/:id" , async(req,res , next)=>{
+    const id = req.params.id;
+    const CommissionSaved = await Commission.findOne({"_id" : id});
+    const filteredData = await Diamonds.find(CommissionSaved.FilterQuery);
+    console.log(CommissionSaved.FilterQuery);
+// Prepare the update operations for all documents
+
+    filteredData.map(async (element) => {
+        Diamonds.findByIdAndUpdate(element._id , {
+            "CommissionPer" : 0,
+            "RetailPrice" : 0
+        }).then(up=>{
+            console.log("done");
+            console.log(up)
+        }).catch(err=>{
+            console.log(err);
+        })
+    })
+
+
+
+
+await Commission.findByIdAndDelete(id);
+
+
+
+res.sendStatus(200);
+} )
 
 
 module.exports = Router

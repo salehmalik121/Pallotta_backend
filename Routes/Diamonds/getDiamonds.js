@@ -40,7 +40,7 @@ Router.get("/diamonds", async (req, res, next) => {
 Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
   let params = req.query;
   let query = req.body;
-  const pageNumber = params.pageNumber - 1 || 0;
+  const pageNumber = params.pageNumber || 0;
  
   const skip = pageNumber * 100;
   if (query.source) {
@@ -58,8 +58,7 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
     query.stoneId = params.stoneId;
   }
 
-  
-  // all mapping before this 
+  // all mapping before this
   const count = await Diamonds.count(query);
   console.log("Params : " +  params);
   console.log(query);
