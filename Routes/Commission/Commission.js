@@ -11,15 +11,13 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
     console.log("commission called");
     console.log(body.FilterQuery);
 
-    const isThere = await Commission.find({"FilterQuery" : body.filteredQuery});
-    console.log("saved data: " + isThere);
-    if(isThere.length === 0){
+    await Commission.findOneAndDelete({"FilterQuery" : body.FilterQuery});
+
         await Commission.create(body).then(()=>{
             console.log("saved");
         }).catch(err=>{
             console.log(err);
         });
-    }
 
 
     
@@ -113,8 +111,7 @@ Router.delete("/:id" , async(req,res , next)=>{
             "CommissionPer" : 0,
             "RetailPrice" : 0
         }).then(up=>{
-            console.log("done");
-            console.log(up)
+
         }).catch(err=>{
             console.log(err);
         })

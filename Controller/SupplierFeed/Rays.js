@@ -43,7 +43,7 @@ const SchemaMapping = async (fetchedData)=>{
             "video": element.VideoPath,
             "StoneType" : "Natural"
         };
-        if(mappedObj.carat < 0.25 || mappedObj.carat > 25 ){
+        if(mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
 
         }else{
 
