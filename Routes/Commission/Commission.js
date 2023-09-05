@@ -19,30 +19,46 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
             console.log(err);
         });
 
-
+        
     
     
-    const filteredData = await Diamonds.find(body.FilterQuery);
+        const filterQuery = body.FilterQuery;
+        const commissionValue = body.commissionValue;
+        
+        try {
+          // Find all diamonds matching the filter query
+          const filteredData = await Diamonds.find(filterQuery).select("_id amount");
+          console.log("Hello")
+          const bulkUpdateOperations = filteredData.map((element) => ({
+            updateOne: {
+              filter: { _id: element._id },
+              update: {
+                $set: {
+                  RetailPrice: Math.round(
+                    (element.amount + (commissionValue * element.amount) / 100) / 5
+                  ) * 5,
+                  CommissionPer: commissionValue,
+                },
+              },
+            },
+          }));
+        
+          // Execute the bulk update operation in a single request
+          const b = 50;
+          for(let i=0 ; i<bulkUpdateOperations.length ; i += b){
+            Diamonds.bulkWrite(bulkUpdateOperations.slice(i , i+ b)).then(()=>{
+                if(i===0){
+                console.log("saved");
+                res.status(200).json({});}
+            })
+          }
+        
+        } catch (err) {
+          console.error(err);
+        }
 
-    console.log(body.commissionValue);
-
-     filteredData.forEach(async(element) => {
-        const retailPrice = element.amount + (body.commissionValue *  element.amount) /100 ;
-        const roundAmount = Math.round(retailPrice/5)*5
-        console.log("value " + roundAmount )
-         Diamonds.updateOne({"_id" : element._id} , {
-            "RetailPrice" : roundAmount,
-            "CommissionPer" : body.commissionValue
-        }).then(found=>{
-            console.log(found)
-        }).catch(err=>{
-            console.log(err);
-        })
-    });
 
 
-    console.log("saved");
-    res.status(200).json({});
 })
 
 
