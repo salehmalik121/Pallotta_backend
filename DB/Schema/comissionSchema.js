@@ -35,6 +35,10 @@ const CommissionSchema = new mongoose.Schema({
         default : 25
     },
     Natural: Boolean,
+    Colored : {
+        type: Boolean ,
+        default : false
+    },
     StockNumber : String,
     LabCert : String,
 
@@ -43,10 +47,6 @@ const CommissionSchema = new mongoose.Schema({
     },
     CommissionPer : {
         type : Number
-    },
-    StoneType : {
-        type : Array,
-        default : ["Lab" , "Natural"],
     },
 
 });

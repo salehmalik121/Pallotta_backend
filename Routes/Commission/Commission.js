@@ -8,10 +8,12 @@ const Router = express.Router();
 Router.post("/" , bodyParser.json() , async (req , res , next)=>{
     const body = req.body;
     body.CommissionPer = body.commissionValue;
-    console.log("commission called");
-    console.log(body.FilterQuery);
+    
+        
+    
+        body.Natural = body.FilterQuery.natural;
 
-    await Commission.findOneAndDelete({"FilterQuery" : body.FilterQuery});
+        await Commission.findOneAndDelete({"FilterQuery" : body.FilterQuery});
 
         await Commission.create(body).then(()=>{
             console.log("saved");
@@ -27,26 +29,31 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
         
         try {
           // Find all diamonds matching the filter query
-          const filteredData = await Diamonds.find(filterQuery).select("_id amount");
+          const count =  await Diamonds.countDocuments(filterQuery);
           console.log("Hello")
-          const bulkUpdateOperations = filteredData.map((element) => ({
-            updateOne: {
-              filter: { _id: element._id },
-              update: {
-                $set: {
-                  RetailPrice: Math.round(
-                    (element.amount + (commissionValue * element.amount) / 100) / 5
-                  ) * 5,
-                  CommissionPer: commissionValue,
-                },
-              },
-            },
-          }));
-        
+          
           // Execute the bulk update operation in a single request
           const b = 50;
-          for(let i=0 ; i<bulkUpdateOperations.length ; i += b){
-            Diamonds.bulkWrite(bulkUpdateOperations.slice(i , i+ b)).then(()=>{
+          for(let i=0 ; i<count ; i += b){
+
+
+            const filteredData = await Diamonds.find(filterQuery).skip(i).limit(50);
+
+            const bulkUpdateOperations = filteredData.map((element) => ({
+                updateOne: {
+                  filter: { _id: element._id },
+                  update: {
+                    $set: {
+                      RetailPrice: Math.round(
+                        (element.amount + (commissionValue * element.amount) / 100) / 5
+                      ) * 5,
+                      CommissionPer: commissionValue,
+                    },
+                  },
+                },
+              }));
+            
+            Diamonds.bulkWrite(bulkUpdateOperations).then(()=>{
                 if(i===0){
                 console.log("saved");
                 res.status(200).json({});}
@@ -62,14 +69,12 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
 })
 
 
-
 Router.get("/" , async(req  ,res, next)=>{
     const filter = {}
-    if(req.query.stoneType){
-        filter.stoneType = {
-            $in : [req.query.stoneType]
-        }
+    if(filter.Natural){
+        filter.Natural = req.query.natural;
     }
+  
     const data = await Commission.find(filter);
     res.status(200).json(data)
 })

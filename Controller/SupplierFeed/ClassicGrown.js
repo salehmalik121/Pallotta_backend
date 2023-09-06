@@ -92,6 +92,7 @@ const SchemaMapping = async (fetchedData)=>{
 
 exports.MapData =  async(req , res)=>{
     await DiamondModel.deleteMany({"source" : "ClassicGrown"});
+    await DiamondModel.deleteMany({"source" : "Classic Grown Colored"});
     for(let i =0 ; i<5 ; i++){
     var data = JSON.stringify({
         "action": "diamond_stock_list",

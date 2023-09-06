@@ -60,7 +60,8 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
 
   // all mapping before this
   const count = await Diamonds.count(query);
-  console.log("Params : " +  params);
+  console.log(params);
+  console.log("-----------------------")
   console.log(query);
 
   // logics
@@ -86,11 +87,15 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
       next();
     }
   } else {
+    if(count < 100){
+      const data = await Diamonds.find(query)
+      .limit(100); // data Retrival
+    res.status(200).json({ data, count })
+    }else{
     const data = await Diamonds.find(query)
       .skip(pageNumber * 100)
       .limit(100); // data Retrival
-    console.log(count);
-    res.status(200).json({ data, count });
+    res.status(200).json({ data, count });}
   }
 });
 
