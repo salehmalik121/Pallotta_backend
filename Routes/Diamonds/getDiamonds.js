@@ -46,6 +46,7 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
 
 
   if(params.colored === "false" || params.colored === "true"){
+    console.log("colored");
     query.colored = params.colored === "true"
   }
 
