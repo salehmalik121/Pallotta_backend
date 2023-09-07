@@ -12,6 +12,7 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
         
     
         body.Natural = body.FilterQuery.natural;
+        body.Colored = body.FilterQuery.colored;
 
         await Commission.findOneAndDelete({"FilterQuery" : body.FilterQuery});
 
@@ -71,9 +72,19 @@ Router.post("/" , bodyParser.json() , async (req , res , next)=>{
 
 Router.get("/" , async(req  ,res, next)=>{
     const filter = {}
-    if(filter.Natural){
-        filter.Natural = req.query.natural;
+    const params = req.query;
+    console.log(params);
+    if(params.natural === "true" || params.natural === "false"){
+      filter.Natural = params.natural === "true"
     }
+
+    if(params.colored === "true" || params.colored === "false"){
+      filter.Colored = params.colored === "true"
+    }
+
+    console.log(filter);
+
+
   
     const data = await Commission.find(filter);
     res.status(200).json(data)

@@ -35,6 +35,7 @@ const CommissionSchema = new mongoose.Schema({
         default : 25
     },
     Natural: Boolean,
+    Colored: Boolean,
     Colored : {
         type: Boolean ,
         default : false

@@ -83,7 +83,8 @@ exports.MapData =  async(req , res)=>{
         const fetchedData = fetch.data.StoneList;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0]);
-        DiamondModel.create(mappedArray).then(()=>{
+        DiamondModel.insertMany(mappedArray).then(()=>{
+            console.log("saved")
             res.sendStatus(200);
         }).catch(err=>{
             console.log(err);
