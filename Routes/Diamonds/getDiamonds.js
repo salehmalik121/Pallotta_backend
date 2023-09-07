@@ -43,7 +43,14 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
   const pageNumber = params.pageNumber || 0;
  
   const skip = pageNumber * 100;
-  if (query.source) {
+
+
+  if(params.colored === "false" || params.colored === "true"){
+    query.colored = params.colored === "true"
+  }
+
+
+  if (params.source) {
     query.source = query.source;
   }
 

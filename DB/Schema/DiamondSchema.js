@@ -81,6 +81,10 @@ const diamondSchema = new mongoose.Schema({
   RetailPrice : {
     type : Number,
 },
+  colored : {
+  default : false,
+  type : Boolean
+}
 
 });
 

@@ -76,6 +76,7 @@ const SchemaMapping = async (fetchedData)=>{
                 AcceptedCPS.includes(mappedObj.polish) && 
                 AcceptedCPS.includes(mappedObj.symmetry)
               ) {
+                mappedObj.colored = true;
                 mappedArray.push(mappedObj);
               }
         }

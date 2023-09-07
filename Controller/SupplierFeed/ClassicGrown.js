@@ -79,6 +79,7 @@ const SchemaMapping = async (fetchedData)=>{
                 AcceptedCPS.includes(mappedObj.polish) && 
                 AcceptedCPS.includes(mappedObj.symmetry)){
                     mappedObj.source = "Classic Grown Colored"
+                    mappedObj.colored = true
                     mappedArray.push(mappedObj);
                 }
               }
