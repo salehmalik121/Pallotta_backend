@@ -5,8 +5,7 @@ const diamondSchema = new mongoose.Schema({
     source: String,
   lotNo: String,
   stoneId: {
-    type : String,
-    unique : true
+    type : String
   },
   status: String,
   image: String,

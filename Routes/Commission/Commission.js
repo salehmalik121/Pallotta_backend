@@ -82,6 +82,21 @@ Router.get("/" , async(req  ,res, next)=>{
       filter.Colored = params.colored === "true"
     }
 
+
+    if(params.stoneType === "lab"){
+      filter.Natural = false;
+      filter.Colored = false
+    } else if(params.stoneType === "natural"){
+      filter.Natural = true;
+      filter.Colored = false
+    }else if(params.stoneType === "lab colored"){
+      filter.Natural = false;
+      filter.Colored = true
+    }else if(params.stoneType === "natural colored"){
+      filter.Natural = true;
+      filter.Colored = true
+    }
+
     console.log(filter);
 
 

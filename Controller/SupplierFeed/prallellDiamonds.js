@@ -64,7 +64,7 @@ const SchemaMapping = async (fetchedData)=>{
         }else{
 
             const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
-            const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J"]
+            const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J" , "G"]
             const AcceptedClarity = ["SI1" , "SI2" , "VS2" , "VS1" , "VVS2" , "VVS1" , "IF"]
             const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX"]
 
@@ -73,11 +73,8 @@ const SchemaMapping = async (fetchedData)=>{
            
             if (
                 AcceptedShape.includes(mappedObj.shape) &&
-                AcceptedColor.includes(mappedObj.color) &&
-                AcceptedClarity.includes(mappedObj.clarity) &&
-                AcceptedCPS.includes(mappedObj.cut) && 
-                AcceptedCPS.includes(mappedObj.polish) && 
-                AcceptedCPS.includes(mappedObj.symmetry)
+                AcceptedColor.includes(mappedObj.color) 
+
               ) {
                 mappedArray.push(mappedObj);
               }
