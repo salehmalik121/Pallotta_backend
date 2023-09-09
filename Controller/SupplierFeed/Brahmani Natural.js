@@ -55,8 +55,8 @@ const SchemaMapping = async (fetchedData)=>{
             RetailPrice: element.RetailPrice || -1
         }
 
-        
-        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
+
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30   ){
 
         }else{
 
@@ -92,7 +92,7 @@ exports.MapData =  async(req , res)=>{
         const fetchedData = fetch.data.StoneList;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0])
-        DiamondModel.create(mappedArray).then(()=>{
+        DiamondModel.insertMany(mappedArray).then(()=>{
             res.sendStatus(200);
         }).catch(err=>{
             console.log(err);

@@ -6,7 +6,7 @@ const xml2js = require('xml2js');
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
-        const id = new mongoose.Types.ObjectId(parseInt(element.Certificate_x0020_No[0]));
+        const id = new mongoose.Types.ObjectId(parseInt(element.Stone_x0020_Id[0]));
        
        
         const mappedObj =  {
@@ -96,7 +96,7 @@ exports.MapData =  async(req , res)=>{
             } else {
                 const mappedArray = await SchemaMapping(result.Inventory.ExcelData);
                 console.log(mappedArray[0]);
-                DiamondModel.create(mappedArray).then(()=>{
+                DiamondModel.insertMany(mappedArray , {ordered : false}).then(()=>{
                     res.sendStatus(200);
                 }).catch(err=>{
                     console.log(err);

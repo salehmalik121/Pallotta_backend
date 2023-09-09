@@ -73,15 +73,12 @@ const SchemaMapping = async (fetchedData)=>{
             const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX"]
 
 
-            
+            if(mappedObj.cut === "ID"){
+                mappedObj.cut = "I"
+            }
            
             if (
-                AcceptedShape.includes(mappedObj.shape) &&
-                AcceptedColor.includes(mappedObj.color) &&
-                AcceptedClarity.includes(mappedObj.clarity) &&
-                AcceptedCPS.includes(mappedObj.cut) && 
-                AcceptedCPS.includes(mappedObj.polish) && 
-                AcceptedCPS.includes(mappedObj.symmetry)
+                true
               ) {
                 mappedArray.push(mappedObj);
               }
@@ -101,7 +98,7 @@ exports.MapData =  async (req , res)=>{
         const fetchedData = fetch.data.Result;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0]);
-        DiamondModel.create(mappedArray).then(()=>{
+        DiamondModel.insertMany(mappedArray).then(()=>{
             res.sendStatus(200);
         }).catch(err=>{
             console.log(err);

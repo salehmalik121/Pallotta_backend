@@ -4,9 +4,7 @@ const diamondSchema = new mongoose.Schema({
     _id : mongoose.Schema.ObjectId,
     source: String,
   lotNo: String,
-  stoneId: {
-    type : String
-  },
+  stoneId: String,
   status: String,
   image: String,
   video: String,

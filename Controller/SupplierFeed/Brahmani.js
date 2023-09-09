@@ -5,7 +5,7 @@ const mongoose = require("mongoose")
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
-        const id = new mongoose.Types.ObjectId(parseInt(element.Lab_Report_No));
+        const id = new mongoose.Types.ObjectId(parseInt(element.Stone_NO));
 
 
         const mappedObj = {
@@ -56,7 +56,7 @@ const SchemaMapping = async (fetchedData)=>{
         }
 
         
-        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
+        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30 ||mappedObj.stoneId === "575376958" || mappedObj.stoneId === "576326930"  ){
 
         }else{
 
@@ -92,7 +92,7 @@ exports.MapData =  async(req , res)=>{
         const fetchedData = fetch.data.StoneList;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0])
-        DiamondModel.create(mappedArray).then(()=>{
+        DiamondModel.insertMany(mappedArray , {ordered : false}).then(()=>{
             res.sendStatus(200);
         }).catch(err=>{
             console.log(err);

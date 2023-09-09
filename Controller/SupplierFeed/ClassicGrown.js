@@ -55,6 +55,10 @@ const SchemaMapping = async (fetchedData)=>{
 
         }else{
 
+
+
+
+
             const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
             const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J" , "G"]
             const AcceptedClarity = ["SI1" , "SI2" , "VS2" , "VS1" , "VVS2" , "VVS1" , "IF"]
@@ -162,10 +166,10 @@ res.status(200);
 }
 
 
-exports.fetchJeniData = async ()=>{
-    const fetch = await axios.post("http://3.110.23.80/OsamProvideStock.svc/GetStock");
-    const mappedArray = await SchemaMapping(fetch.data.GetStockResult.Data)
+// exports.fetchJeniData = async ()=>{
+//     const fetch = await axios.post("http://3.110.23.80/OsamProvideStock.svc/GetStock");
+//     const mappedArray = await SchemaMapping(fetch.data.GetStockResult.Data)
 
-    return mappedArray;
-}
+//     return mappedArray;
+// }
 

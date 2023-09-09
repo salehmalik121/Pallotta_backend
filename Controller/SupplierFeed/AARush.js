@@ -50,11 +50,65 @@ const SchemaMapping = async (fetchedData)=>{
 
         }else{
 
+
+           
+
+            if(mappedObj.cut === "excellent"){
+                mappedObj.cut = "EX"
+            }
+
+            if(mappedObj.cut === "very good"){
+                mappedObj.cut = "VG"
+            }
+
+            if(mappedObj.cut === "Good"){
+                mappedObj.cut = "G"
+            }
+
+            
+            if(mappedObj.cut === "Ideal"){
+                mappedObj.cut = "I"
+            }
+            if(mappedObj.polish === "excellent"){
+                mappedObj.polish = "EX"
+            }
+
+            if(mappedObj.polish === "very good"){
+                mappedObj.polish = "VG"
+            }
+
+            if(mappedObj.polish === "Good"){
+                mappedObj.polish = "G"
+            }
+
+            
+            if(mappedObj.polish === "Ideal"){
+                mappedObj.polish = "I"
+            }
+            if(mappedObj.symmetry === "excellent"){
+                mappedObj.symmetry = "EX"
+            }
+
+            if(mappedObj.symmetry === "very good"){
+                mappedObj.symmetry = "VG"
+            }
+
+            if(mappedObj.symmetry === "Good"){
+                mappedObj.symmetry = "G"
+            }
+
+            
+            if(mappedObj.symmetry === "Ideal"){
+                mappedObj.symmetry = "I"
+            }
+
+            mappedObj.clarity = mappedObj.clarity.toUpperCase();
+
             const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
             const AcceptedColor = ["D" , "E" , "F" , "G" , "H" , "I" , "J"]
             const AcceptedClarity = ["SI1", "si1" , "SI2" , "si2" , "VS2", "vs2" , "VS1", "vs1" , "VVS2" , "vvs2" , "VVS1" , "vvs1" , "IF" , "if" , "fl" ]
             const AcceptedCPS = ["E" , "VG" , "G" , "GD" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX" , "excellent" , "very good" , "good" , "ideal"]
-
+            
 
             
            
