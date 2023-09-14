@@ -81,7 +81,11 @@ const diamondSchema = new mongoose.Schema({
   colored : {
   default : false,
   type : Boolean
-}
+}, 
+
+scut : Number,
+spolish : Number,
+ssym : Number
 
 });
 

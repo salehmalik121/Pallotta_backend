@@ -1,6 +1,7 @@
 const axios = require("axios");
 const DiamondModel = require("../../DB/Schema/DiamondSchema");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const CPSmapper = require("../functions/CPSmapper");
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
@@ -57,8 +58,14 @@ const SchemaMapping = async (fetchedData)=>{
             labReportComment: element.cert_comment,
             natural: true, // Assuming that "Natural_Type" is not provided and all stones are natural
             CommissionPer: 0, // Not provided in the data
-            RetailPrice: -1 // Default value as per the schema
+            RetailPrice: 0 // Default value as per the schema
         }
+
+
+        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+        mappedObj.scut = mappedCPS.cut;
+        mappedObj.spolish = mappedCPS.polish;
+        mappedObj.ssym = mappedCPS.sym;
         
         if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
 
@@ -75,10 +82,7 @@ const SchemaMapping = async (fetchedData)=>{
             if (
                 AcceptedShape.includes(mappedObj.shape) &&
                 AcceptedColor.includes(mappedObj.color) &&
-                AcceptedClarity.includes(mappedObj.clarity) &&
-                AcceptedCPS.includes(mappedObj.cut) && 
-                AcceptedCPS.includes(mappedObj.polish) && 
-                AcceptedCPS.includes(mappedObj.symmetry)
+                AcceptedClarity.includes(mappedObj.clarity)
               ) {
                 mappedArray.push(mappedObj);
               }
@@ -93,12 +97,14 @@ const SchemaMapping = async (fetchedData)=>{
 exports.MapData =  async(req , res)=>{
     await DiamondModel.deleteMany({"source" : "RRajesh"})
 
-    axios.post("https://u24351668.ct.sendgrid.net/ls/click?upn=qH0TWbaR1eNxpDR2sD-2FP6qZOfjKwhRjEPzY8Q-2F0j-2BQrzRM4qCIcPyXJIDkBGhzfw9sawg36JV226HFVuVWkzu3vZmna1Rp0FwNAhPBkA-2F5yy7BfSTihHZT6qpRRqH5DAM0vGfUU12OBQ7PYl0Jx6xqEjnK4SgnqKUWYgdHVdw0k-3DFnJZ_oVTZGrLHzFJ1HcdJu4aha-2BylV313pXWBijMydw4QGuwWtXv4nwnOriYTDDQeiwnNBpAAgOlaBZgdDJSB9Jws3kvCmPZ7Z2WCc9Ye4LelqoZIAUja6i-2FdI1hzpdiZIG5GlJHlSsDyAEUErLtuFbBvqGyrRCBqq34wLXph1iiDg3syE3mKHro8iEWoWG8u5ll7CJlNorYOSqUMvZB0jJ9vK0lnqosjeOosu7YndUQN-2FEk-3D").then(async (fetch)=>{
+    for(let i = 1 ; i<= 9 ; i++){
+        axios.get(`https://api.rrajesh.co/api/v1/diamond/paginate?username=pallottajewellers&password=pdapi123&page=${i}&limit=1000`).then(async (fetch)=>{
         const fetchedData = fetch.data.list;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0])
-        DiamondModel.create(mappedArray).then(()=>{
-            res.sendStatus(200);
+        DiamondModel.insertMany(mappedArray).then(()=>{
+            if(i===9){
+            res.sendStatus(200);}
         }).catch(err=>{
             console.log(err);
             res.status(500).json(err);
@@ -107,6 +113,8 @@ exports.MapData =  async(req , res)=>{
     }).catch((err)=>{
         console.log(err);
     })
+    }
+    
 }
 
 

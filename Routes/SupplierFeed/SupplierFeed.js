@@ -13,6 +13,9 @@ const BrahmaniDiamonds = require("../../Controller/SupplierFeed/Brahmani");
 const RRajesh = require("../../Controller/SupplierFeed/RRjesh");
 const BrahmaniNatural = require("../../Controller/SupplierFeed/Brahmani Natural");
 const Rays = require("../../Controller/SupplierFeed/Rays");
+const Anjali = require("../../Controller/SupplierFeed/Anjali");
+const EcoGrown = require("../../Controller/SupplierFeed/EcoGrown");
+const ShreeSuktam = require("../../Controller/SupplierFeed/ShreeSuktam");
 const Router = express.Router();
 
 Router.get("/Jeni" , jeniController.MapData);
@@ -29,5 +32,8 @@ Router.get("/Brahmani" , BrahmaniDiamonds.MapData);
 Router.get("/RRajesh" , RRajesh.MapData );
 Router.get("/BrahmaniNatural" , BrahmaniNatural.MapData );
 Router.get("/Rays" , Rays.MapData );
+Router.get("/Anjali" , Anjali.MapData );
+Router.get("/EcoGrown" , EcoGrown.MapData );
+Router.get("/ShreeSuktam" , ShreeSuktam.MapData );
 
 module.exports = Router

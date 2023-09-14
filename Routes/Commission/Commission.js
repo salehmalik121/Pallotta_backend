@@ -5,69 +5,71 @@ const Diamonds = require("../../DB/Schema/DiamondSchema");
 
 const Router = express.Router();
 
-Router.post("/" , bodyParser.json() , async (req , res , next)=>{
-    const body = req.body;
-    body.CommissionPer = body.commissionValue;
-    
-        
-    
-        body.Natural = body.FilterQuery.natural;
-        body.Colored = body.FilterQuery.colored;
+const batchLimit = 500; // Adjust this batch size as needed
 
-        await Commission.findOneAndDelete({"FilterQuery" : body.FilterQuery});
+Router.post("/", bodyParser.json(), async (req, res, next) => {
+  const body = req.body;
+  body.CommissionPer = body.commissionValue;
+  body.Natural = body.FilterQuery.natural;
+  body.Colored = body.FilterQuery.colored;
 
-        await Commission.create(body).then(()=>{
-            console.log("saved");
-        }).catch(err=>{
-            console.log(err);
-        });
+  const filterQuery = body.FilterQuery;
+  const commissionValue = body.commissionValue;
 
-        
-    
-    
-        const filterQuery = body.FilterQuery;
-        const commissionValue = body.commissionValue;
-        
-        try {
-          // Find all diamonds matching the filter query
-          const count =  await Diamonds.countDocuments(filterQuery);
-          console.log("Hello")
-          
-          // Execute the bulk update operation in a single request
-          const b = 50;
-          for(let i=0 ; i<count ; i += b){
+  try {
+    // Find all diamonds matching the filter query and get a cursor
+    const cursor = Diamonds.find(filterQuery).lean().cursor();
 
+    let isFirstBatchSaved = false;
+    let bulkUpdateOperations = [];
 
-            const filteredData = await Diamonds.find(filterQuery).skip(i).limit(50);
+    for await (const doc of cursor) {
+      bulkUpdateOperations.push({
+        updateOne: {
+          filter: { _id: doc._id },
+          update: {
+            $set: {
+              RetailPrice: Math.round((doc.amount + (commissionValue * doc.amount) / 100) / 5) * 5,
+              CommissionPer: commissionValue,
+            },
+          },
+        },
+      });
 
-            const bulkUpdateOperations = filteredData.map((element) => ({
-                updateOne: {
-                  filter: { _id: element._id },
-                  update: {
-                    $set: {
-                      RetailPrice: Math.round(
-                        (element.amount + (commissionValue * element.amount) / 100) / 5
-                      ) * 5,
-                      CommissionPer: commissionValue,
-                    },
-                  },
-                },
-              }));
-            
-            Diamonds.bulkWrite(bulkUpdateOperations).then(()=>{
-                if(i===0){
-                console.log("saved");
-                res.status(200).json({});}
-            })
-          }
-        
-        } catch (err) {
-          console.error(err);
+      if (bulkUpdateOperations.length >= batchLimit) {
+        // Execute bulk write operation when batch size is reached
+        await Diamonds.bulkWrite(bulkUpdateOperations);
+        bulkUpdateOperations = [];
+
+        if (!isFirstBatchSaved) {
+          console.log("First batch saved");
+          isFirstBatchSaved = true;
         }
+      }
+    }
+
+    if (bulkUpdateOperations.length > 0) {
+      // Execute any remaining bulk updates
+      await Diamonds.bulkWrite(bulkUpdateOperations);
+    }
+
+    // Delete documents matching the filter query
+    await Commission.deleteMany({ FilterQuery: filterQuery });
+
+    // Create a new Commission document
+    await Commission.create(body);
+
+    res.status(200).json({ message: "All batches saved" });
+    console.log("Saved");
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 
-})
 
 
 Router.get("/" , async(req  ,res, next)=>{

@@ -1,7 +1,7 @@
 const axios = require("axios");
 const DiamondModel = require("../../DB/Schema/DiamondSchema");
-const mongoose = require("mongoose")
-
+const mongoose = require("mongoose");
+const CPSmapper = require("../functions/CPSmapper");
 
     const SchemaMapping = async (fetchedData) => {
         const mappedArray = [];
@@ -37,16 +37,26 @@ const mongoose = require("mongoose")
                 natural : false,
             }
 
+
+
+            const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+            mappedObj.scut = mappedCPS.cut;
+            mappedObj.spolish = mappedCPS.polish;
+            mappedObj.ssym = mappedCPS.sym;
                    
             if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
 
             }else{
     
                 const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
-                const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J"]
+                const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J" , "G"]
                 const AcceptedClarity = ["SI1" , "SI2" , "VS2" , "VS1" , "VVS2" , "VVS1" , "IF"]
                 const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX"]
-    
+                
+
+                if(mappedObj.cut === "ID"){
+                    mappedObj.cut = "I"
+                }
     
                 
                
@@ -82,7 +92,7 @@ exports.MapData =  async (req , res)=>{
         const fetchedData = fetch.data;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0]);
-        DiamondModel.create(mappedArray).then(()=>{
+        DiamondModel.insertMany(mappedArray , {ordered : false}).then(()=>{
             res.sendStatus(200);
         }).catch(err=>{
             console.log(err);

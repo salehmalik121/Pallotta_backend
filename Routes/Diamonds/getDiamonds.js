@@ -10,7 +10,7 @@ Router.get("/diamonds", async (req, res, next) => {
   const pageNumber = query.pageNumber || 1;
   const numberOfEntries = 100;
   const queryMapper = {};
-
+  
   if (query.source) {
     queryMapper.source = query.source;
   }
@@ -38,74 +38,72 @@ Router.get("/diamonds", async (req, res, next) => {
 });
 
 Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
-  let params = req.query;
-  let query = req.body;
-  const pageNumber = params.pageNumber || 0;
- 
-  const skip = pageNumber * 100;
+  const params = req.query;
+  const query = req.body;
+  const pageNumber = parseInt(params.pageNumber) || 1;
+  const pageSize = 100;
 
-
-  if(params.colored === "false" || params.colored === "true"){
-    console.log("colored");
-    query.colored = params.colored === "true"
-  }
-
-
+  // params to query
+  console.log(params);
   if (params.source) {
-    query.source = query.source;
-  }
-
-  if (params.natural === "false" || params.natural === "true") {
-    query.natural = params.natural === "true";
+    query.source = params.source;
   }
 
   if (params.stock) {
-    query.lotNo = params.stock;
+    queryMapper.lotNo = params.stock;
   }
   if (params.stoneId) {
     query.stoneId = params.stoneId;
   }
+  // Map boolean parameters
+  if (typeof params.colored === "string") {
+    query.colored = params.colored === "true";
+  }
 
-  // all mapping before this
-  const count = await Diamonds.count(query);
-  console.log(params);
-  console.log("-----------------------")
-  console.log(query);
+  if (typeof params.natural === "string") {
+    query.natural = params.natural === "true";
+  }
 
-  // logics
+  // Define sorting options
+  const sortOptions = {};
 
   if (params.sorting === "true") {
-    const direction = params.direction;
-    const sortingParameter = params.sortingParameter;
-    if (direction === "asc") {
-      const data = await Diamonds.find(query)
-        .sort({ [sortingParameter]: 1 })
-        .allowDiskUse(true)
-        .skip(skip)
-        .limit(100);
-      res.status(200).json({ data, count });
-      next();
-    } else {
-      const data = await Diamonds.find(query)
-        .sort({ [sortingParameter]: -1 })
-        .allowDiskUse(true)
-        .skip(skip)
-        .limit(100);
-      res.status(200).json({ data, count });
-      next();
+    const direction = params.direction === "asc" ? 1 : -1;
+    let sortingParameter = params.sortingParameter;
+
+    // Map sorting parameters
+    if (sortingParameter === "cut") {
+      sortingParameter = "scut";
+    } else if (sortingParameter === "polish") {
+      sortingParameter = "spolish";
+    } else if (sortingParameter === "symmetry") {
+      sortingParameter = "ssym";
     }
-  } else {
-    if(count < 100){
-      const data = await Diamonds.find(query)
-      .limit(100); // data Retrival
-    res.status(200).json({ data, count })
-    }else{
-    const data = await Diamonds.find(query)
-      .skip(pageNumber * 100)
-      .limit(100); // data Retrival
-    res.status(200).json({ data, count });}
+
+    sortOptions[sortingParameter] = direction;
+  }
+
+  try {
+    const count = await Diamonds.countDocuments(query);
+    const skip = (pageNumber - 1) * pageSize;
+    console.log("this is final send to db");
+    console.log(query);
+    const dataQuery = Diamonds.find(query).lean().skip(skip).limit(pageSize).allowDiskUse(true);
+
+    // Apply sorting if necessary
+    if (Object.keys(sortOptions).length > 0) {
+      dataQuery.sort(sortOptions);
+    }
+
+    const data = await dataQuery;
+
+    res.status(200).json({ data, count });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 Router.get("/diamonds/sort/:path", async (req, res, next) => {
   const path = req.params.path;

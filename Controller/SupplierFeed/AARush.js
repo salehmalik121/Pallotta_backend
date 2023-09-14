@@ -3,6 +3,7 @@ const DiamondModel = require("../../DB/Schema/DiamondSchema");
 const mongoose = require("mongoose");
 const aadata = require("../../aa.json");
 const { parseNumbers } = require("xml2js/lib/processors");
+const CPSmapper = require("../functions/CPSmapper");
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
@@ -61,12 +62,12 @@ const SchemaMapping = async (fetchedData)=>{
                 mappedObj.cut = "VG"
             }
 
-            if(mappedObj.cut === "Good"){
+            if(mappedObj.cut === "good"){
                 mappedObj.cut = "G"
             }
 
             
-            if(mappedObj.cut === "Ideal"){
+            if(mappedObj.cut === "ideal"){
                 mappedObj.cut = "I"
             }
             if(mappedObj.polish === "excellent"){
@@ -77,12 +78,12 @@ const SchemaMapping = async (fetchedData)=>{
                 mappedObj.polish = "VG"
             }
 
-            if(mappedObj.polish === "Good"){
+            if(mappedObj.polish === "good"){
                 mappedObj.polish = "G"
             }
 
             
-            if(mappedObj.polish === "Ideal"){
+            if(mappedObj.polish === "ideal"){
                 mappedObj.polish = "I"
             }
             if(mappedObj.symmetry === "excellent"){
@@ -93,14 +94,19 @@ const SchemaMapping = async (fetchedData)=>{
                 mappedObj.symmetry = "VG"
             }
 
-            if(mappedObj.symmetry === "Good"){
+            if(mappedObj.symmetry === "good"){
                 mappedObj.symmetry = "G"
             }
 
             
-            if(mappedObj.symmetry === "Ideal"){
+            if(mappedObj.symmetry === "ideal"){
                 mappedObj.symmetry = "I"
             }
+
+            const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+            mappedObj.scut = mappedCPS.cut;
+            mappedObj.spolish = mappedCPS.polish;
+            mappedObj.ssym = mappedCPS.sym;
 
             mappedObj.clarity = mappedObj.clarity.toUpperCase();
 
@@ -108,7 +114,7 @@ const SchemaMapping = async (fetchedData)=>{
             const AcceptedColor = ["D" , "E" , "F" , "G" , "H" , "I" , "J"]
             const AcceptedClarity = ["SI1", "si1" , "SI2" , "si2" , "VS2", "vs2" , "VS1", "vs1" , "VVS2" , "vvs2" , "VVS1" , "vvs1" , "IF" , "if" , "fl" ]
             const AcceptedCPS = ["E" , "VG" , "G" , "GD" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX" , "excellent" , "very good" , "good" , "ideal"]
-            
+
 
             
            

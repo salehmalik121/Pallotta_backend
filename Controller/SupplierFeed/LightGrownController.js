@@ -1,6 +1,7 @@
 const axios = require("axios");
 const DiamondModel = require("../../DB/Schema/DiamondSchema");
 const mongoose = require("mongoose")
+const CPSmapper = require("../functions/CPSmapper");
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
@@ -45,6 +46,16 @@ const SchemaMapping = async (fetchedData)=>{
             videoUrl: element.Video_url,
             natural : false
         }
+
+        if(mappedObj.cut === "ID"){
+            mappedObj.cut = "I";
+        }
+
+
+        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+        mappedObj.scut = mappedCPS.cut;
+        mappedObj.spolish = mappedCPS.polish;
+        mappedObj.ssym = mappedCPS.sym;
 
         if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
 
