@@ -7,7 +7,7 @@ const SchemaMapping = async (fetchedData)=>{
     await fetchedData.forEach(element => {
         const id = new mongoose.Types.ObjectId(parseInt(element.CERTIFICATE_NO));
 
-        const mappedObj = {
+        let mappedObj = {
             _id: id,
             "source": "Anjali",
             "lotNo": element.StoneNo,
@@ -45,11 +45,18 @@ const SchemaMapping = async (fetchedData)=>{
             "natural": element.LabGrown === "YES" ? false : true,  // Set natural flag based on LabGrown field
         }
 
+        if(mappedObj.cut === "ID" || mappedObj.cut === " ID"){
+          mappedObj.cut = "I";
+        }
+        
 
-        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+        
+
+        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);
         mappedObj.scut = mappedCPS.cut;
         mappedObj.spolish = mappedCPS.polish;
         mappedObj.ssym = mappedCPS.sym;
+        mappedObj.sclarity = mappedCPS.cls;
 
         if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
 

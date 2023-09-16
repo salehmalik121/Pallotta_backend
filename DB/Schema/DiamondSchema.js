@@ -73,10 +73,12 @@ const diamondSchema = new mongoose.Schema({
     type : Boolean
   },
   CommissionPer : {
-    type : Number
+    type : Number,
+    default : 0
   },
   RetailPrice : {
     type : Number,
+    default : 0
 },
   colored : {
   default : false,
@@ -85,7 +87,8 @@ const diamondSchema = new mongoose.Schema({
 
 scut : Number,
 spolish : Number,
-ssym : Number
+ssym : Number,
+sclarity : Number
 
 });
 

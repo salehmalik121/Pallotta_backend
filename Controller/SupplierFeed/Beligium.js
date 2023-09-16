@@ -2,6 +2,7 @@ const axios = require("axios");
 const DiamondModel = require("../../DB/Schema/DiamondSchema");
 const mongoose = require("mongoose");
 const CPSmapper = require("../functions/CPSmapper");
+const Supplier = require("../../Class/Supplier");
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
@@ -67,10 +68,11 @@ const SchemaMapping = async (fetchedData)=>{
         }
 
 
-        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);
         mappedObj.scut = mappedCPS.cut;
         mappedObj.spolish = mappedCPS.polish;
         mappedObj.ssym = mappedCPS.sym;
+        mappedObj.sclarity = mappedCPS.cls;
 
         
         if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
@@ -110,6 +112,8 @@ exports.MapData =  async(req , res)=>{
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0]);
         DiamondModel.create(mappedArray).then(()=>{
+            const SupplierUp = new Supplier("Belgium");
+            SupplierUp.SyncCommission();
             res.sendStatus(200);
         }).catch(err=>{
             console.log(err);

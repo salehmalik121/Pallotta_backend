@@ -2,9 +2,13 @@ const axios = require("axios");
 const DiamondModel = require("../../DB/Schema/DiamondSchema");
 const mongoose = require("mongoose")
 const CPSmapper = require("../functions/CPSmapper");
+const Supplier = require("../../Class/Supplier");
+const DeletedDiamonds = require("../../DB/Schema/DeletedDiamonds");
+const checkIsValid = require("../functions/checkIsAllowed");
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
+    const deletedDiamonds = await DeletedDiamonds.find({} , {"stoneId" : 1});
     await fetchedData.forEach(element => {
         const id = new mongoose.Types.ObjectId(parseInt(element.ReportNo));
         const mappedObj = {
@@ -51,29 +55,36 @@ const SchemaMapping = async (fetchedData)=>{
             natural: false
         }
 
-        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
-        mappedObj.scut = mappedCPS.cut;
-        mappedObj.spolish = mappedCPS.polish;
-        mappedObj.ssym = mappedCPS.sym;
 
-        if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
-
-        }else{
-            const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
-            const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J" , "G"]
-            const AcceptedClarity = ["SI1" , "SI2" , "VS2" , "VS1" , "VVS2" , "VVS1" , "IF"]
-            const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX"]
-            if (
-                AcceptedShape.includes(mappedObj.shape) &&
-                AcceptedColor.includes(mappedObj.color) &&
-                AcceptedClarity.includes(mappedObj.clarity) &&
-                AcceptedCPS.includes(mappedObj.cut) && 
-                AcceptedCPS.includes(mappedObj.polish) && 
-                AcceptedCPS.includes(mappedObj.symmetry)
-              ) {
-                mappedArray.push(mappedObj);
-              }
+        if(checkIsValid(deletedDiamonds , mappedObj.stoneId)){  
+            
+            const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);
+            mappedObj.scut = mappedCPS.cut;
+            mappedObj.spolish = mappedCPS.polish;
+            mappedObj.ssym = mappedCPS.sym;
+            mappedObj.sclarity = mappedCPS.cls;
+    
+            if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
+    
+            }else{
+                const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
+                const AcceptedColor = ["D" , "E" , "F" , "H" , "I" , "J" , "G"]
+                const AcceptedClarity = ["SI1" , "SI2" , "VS2" , "VS1" , "VVS2" , "VVS1" , "IF"]
+                const AcceptedCPS = ["E" , "VG" , "G" , "I" , "EXCELLENT" , "VERY GOOD" , "GOOD" , "IDEAL" , "EX"]
+                if (
+                    AcceptedShape.includes(mappedObj.shape) &&
+                    AcceptedColor.includes(mappedObj.color) &&
+                    AcceptedClarity.includes(mappedObj.clarity) &&
+                    AcceptedCPS.includes(mappedObj.cut) && 
+                    AcceptedCPS.includes(mappedObj.polish) && 
+                    AcceptedCPS.includes(mappedObj.symmetry)
+                  ) {
+                    mappedArray.push(mappedObj);
+                  }
+            }
         }
+
+
     });
     return mappedArray;
 }
@@ -107,6 +118,8 @@ exports.MapData =  async(req , res)=>{
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0]);
         DiamondModel.create(mappedArray).then(()=>{
+            const SupplierUp = new Supplier("Mereya");
+            SupplierUp.SyncCommission();
             res.sendStatus(200);
         }).catch(err=>{
             console.log(err);

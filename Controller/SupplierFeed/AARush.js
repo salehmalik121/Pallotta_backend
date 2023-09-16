@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const aadata = require("../../aa.json");
 const { parseNumbers } = require("xml2js/lib/processors");
 const CPSmapper = require("../functions/CPSmapper");
-
+const Supplier = require("../../Class/Supplier");
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
@@ -103,12 +103,14 @@ const SchemaMapping = async (fetchedData)=>{
                 mappedObj.symmetry = "I"
             }
 
-            const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+            
+
+            mappedObj.clarity = mappedObj.clarity.toUpperCase();
+            const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);
             mappedObj.scut = mappedCPS.cut;
             mappedObj.spolish = mappedCPS.polish;
             mappedObj.ssym = mappedCPS.sym;
-
-            mappedObj.clarity = mappedObj.clarity.toUpperCase();
+            mappedObj.sclarity = mappedCPS.cls;
 
             const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
             const AcceptedColor = ["D" , "E" , "F" , "G" , "H" , "I" , "J"]
@@ -178,8 +180,9 @@ const dataFetching = async (apiLink)=>{
 exports.MapData =  async (req , res)=>{
 
 
-    await DiamondModel.deleteMany({"source" : "AARush"});
+await DiamondModel.deleteMany({"source" : "AARush"});
    await dataFetching("https://labdiamondinventory.com/api/inventory/6620b8c37cbf77");
+   
    res.status(200);
 
 }

@@ -58,12 +58,15 @@ const SchemaMapping = async (fetchedData)=>{
             StoneType: "Lab",
             natural: false
         }
+        if(mappedObj.cut === "ID"){
+            mappedObj.cut = "I"
+        }
 
-
-        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);
         mappedObj.scut = mappedCPS.cut;
         mappedObj.spolish = mappedCPS.polish;
         mappedObj.ssym = mappedCPS.sym;
+        mappedObj.sclarity = mappedCPS.cls;
        
         
         if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){

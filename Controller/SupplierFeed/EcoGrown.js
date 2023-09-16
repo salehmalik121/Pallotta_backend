@@ -28,7 +28,7 @@ const SchemaMapping = async (fetchedData)=>{
             "carat": parseFloat(element.ItemDetails.Weight), // Assuming Weight is in carats and needs to be converted to a number.
             "discountPercent": parseFloat(element.ItemDetails["Rap%"]) * -1, // Default discount percentage
             "pricePerCarat": parseFloat(element.ItemDetails.Price_per_Carat), // Assuming Price_per_Carat is a number.
-            "amount": parseFloat(element.ItemDetails.Price_per_Carat) * parseInt(element.ItemDetails.Weight)  , // Assuming Rapaport Price is a number.
+            "amount": parseFloat(element.ItemDetails.Price_per_Carat) * parseFloat(element.ItemDetails.Weight)  , // Assuming Rapaport Price is a number.
             "rapRate": parseFloat(element.ItemDetails["Rap%"]), // Assuming Rap% is a number.
             "lab": element.ItemDetails.Lab,
             "measurement": element.ItemDetails.Measurement,
@@ -43,11 +43,6 @@ const SchemaMapping = async (fetchedData)=>{
             "natural": false 
         };
 
-
-        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
-        mappedObj.scut = mappedCPS.cut;
-        mappedObj.spolish = mappedCPS.polish;
-        mappedObj.ssym = mappedCPS.sym;
 
 
         if( mappedObj.carat < 0.20 || mappedObj.carat > 30 ){
@@ -105,6 +100,11 @@ const SchemaMapping = async (fetchedData)=>{
             if(mappedObj.symmetry === "Ideal"){
                 mappedObj.symmetry = "I"
             }
+            const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);
+            mappedObj.scut = mappedCPS.cut;
+            mappedObj.spolish = mappedCPS.polish;
+            mappedObj.ssym = mappedCPS.sym;
+            mappedObj.sclarity = mappedCPS.cls;
             const AcceptedShape = ["ROUND" , "Round" , "PRINCESS" , "Princess" , "PEAR" , "Pear" , "EMERALD" , "Emerald" , "ASSCHER" , "Asscher" ,"MARQUISE" , "Marquise" , "OVAL" , "Oval" , "CUSHION" , "Cushion" , "HEART" , "Heart" , "RADIANT" , "Radiant"]
             const AcceptedColor = ["D" , "E" , "F" , "G" , "H" , "I" , "J"]
             const AcceptedClarity = ["SI1", "si1" , "SI2" , "si2" , "VS2", "vs2" , "VS1", "vs1" , "VVS2" , "vvs2" , "VVS1" , "vvs1" , "IF" , "if" , "fl" ]

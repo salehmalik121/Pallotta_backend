@@ -61,11 +61,22 @@ const SchemaMapping = async (fetchedData)=>{
             RetailPrice: 0 // Default value as per the schema
         }
 
+        if(mappedObj.polish === "GD"){
+            mappedObj.polish = "G"
+        }
+        if(mappedObj.cut === "GD"){
+            mappedObj.cut = "G"
+        }
+        
+        if(mappedObj.symmetry === "GD"){
+            mappedObj.symmetry = "G"
+        }
 
-        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry);
+        const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);
         mappedObj.scut = mappedCPS.cut;
         mappedObj.spolish = mappedCPS.polish;
         mappedObj.ssym = mappedCPS.sym;
+        mappedObj.sclarity = mappedCPS.cls;
         
         if(mappedObj.stoneId===" " || mappedObj.stoneId==="" || mappedObj.carat < 0.20 || mappedObj.carat > 30  ){
 

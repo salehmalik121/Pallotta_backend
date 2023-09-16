@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const WebSocket = require("ws");
 const http = require("http");
 const Router = express.Router();
+const DeletedDiamonds = require("../../DB/Schema/DeletedDiamonds")
 
 Router.get("/diamonds", async (req, res, next) => {
   const query = req.query;
@@ -78,7 +79,10 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
       sortingParameter = "spolish";
     } else if (sortingParameter === "symmetry") {
       sortingParameter = "ssym";
+    } else if(sortingParameter === "clarity"){
+      sortingParameter = "sclarity"
     }
+
 
     sortOptions[sortingParameter] = direction;
   }
@@ -138,5 +142,23 @@ Router.get("/data-stream", (req, res) => {
     });
   });
 });
+
+
+Router.delete("/:id" , async (req , res)=>{
+  const stoneId = req.params.id;
+  console.log("deleted Req called")
+  
+  await Diamonds.deleteOne({"stoneId" : stoneId}).then(()=>{
+    console.log("Deleted");
+    DeletedDiamonds.create({"stoneId" : stoneId})
+    res.sendStatus(200);
+  }).catch((err)=>{
+    console.log(err);
+    res.sendStatus(500);
+  });
+  
+
+
+})
 
 module.exports = Router;
