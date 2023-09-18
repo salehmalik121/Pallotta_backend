@@ -97,7 +97,7 @@ const SchemaMapping = async (fetchedData)=>{
             }
 
             
-            if(mappedObj.symmetry === "Ideal"){
+            if(mappedObj.symmetry === "Ideal" || mappedObj.symmetry === "IDEAL"  ){
                 mappedObj.symmetry = "I"
             }
             const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);

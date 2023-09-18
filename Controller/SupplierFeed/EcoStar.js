@@ -60,9 +60,12 @@ const SchemaMapping = async (fetchedData)=>{
         if(mappedObj.cut === "ID"){
             mappedObj.cut = "I";
         }
+        if(mappedObj.cut === "GD"){
+            mappedObj.cut = "G";
+        }
 
 
-        mappedObj.shape.toUpperCase();
+        mappedObj.shape = mappedObj.shape.toUpperCase();
 
         const mappedCPS = CPSmapper(mappedObj.cut , mappedObj.polish , mappedObj.symmetry , mappedObj.clarity);
         mappedObj.scut = mappedCPS.cut;

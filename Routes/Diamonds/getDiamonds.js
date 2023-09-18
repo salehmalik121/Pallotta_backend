@@ -109,6 +109,67 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
 });
 
 
+
+Router.get("/Search", async (req, res, next) => {
+  const params = req.query;
+  const skip = 100;
+  const pageNumber = params.pageNumber - 1 || 0;
+  if (params.value) {
+    const SearchValue = params.value;
+    const check = parseInt(SearchValue);
+    if (isNaN(check)) {
+      const query = {
+        $or: [
+          {
+            "source": { $regex: new RegExp(SearchValue, "i") } // Case-insensitive regex
+          },
+          {
+            "stoneId": { $regex: new RegExp(SearchValue, "i") }
+          },
+          {
+            "lotNo": { $regex: new RegExp(SearchValue, "i") }
+          },
+          {
+            "shape": { $regex: new RegExp(SearchValue, "i") }
+          },
+          {
+            "color": { $regex: new RegExp(SearchValue, "i") }
+          },
+          {
+            "clarity": { $regex: new RegExp(SearchValue, "i") }
+          },
+          {
+            "lab": { $regex: new RegExp(SearchValue, "i") }
+          }
+        ]
+      };
+      const count = await Diamonds.countDocuments(query);
+      const data = await Diamonds.find(query).skip(skip * pageNumber).limit(skip).lean();
+      res.status(200).json({ data, count });
+    } else {
+      const query = {
+        $or: [
+          {
+            "carat": SearchValue
+          },
+          {
+            "amount": SearchValue
+          }
+        ]
+      };
+      const count = await Diamonds.countDocuments(query);
+      const data = await Diamonds.find(query).skip(skip * pageNumber).limit(skip).lean();
+      res.status(200).json({ data, count });
+    }
+  } else {
+    res.sendStatus(200);
+  }
+});
+
+
+
+
+
 Router.get("/diamonds/sort/:path", async (req, res, next) => {
   const path = req.params.path;
   const data = await Diamonds.find()
