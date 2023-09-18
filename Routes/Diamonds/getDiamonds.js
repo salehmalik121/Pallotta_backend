@@ -156,10 +156,10 @@ Router.get("/Search", async (req, res, next) => {
             "amount": SearchValue
           },          
           {
-            "stoneId": { $regex: new RegExp(SearchValue, "i") }
+            "stoneId":  SearchValue
           },
           {
-            "lotNo": { $regex: new RegExp(SearchValue, "i") }
+            "lotNo": SearchValue
           }, 
         ]
       };
