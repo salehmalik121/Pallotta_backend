@@ -7,6 +7,37 @@ const Router = express.Router();
 
 const batchLimit = 500; // Adjust this batch size as needed
 
+
+async function detectConflicts(newDocument) {
+  const storedDocuments = await Commission.find({}); // Fetch all stored documents
+
+  const conflicts = [];
+
+  for (const storedDoc of storedDocuments) {
+    const conflict = findConflicts(storedDoc.toObject(), newDocument);
+    if (Object.keys(conflict).length > 0) {
+      conflicts.push({ storedDoc, conflict });
+    }
+  }
+
+  return conflicts;
+}
+
+// Function to compare two objects and find conflicts
+function findConflicts(doc1, doc2) {
+  const conflicts = {};
+
+  for (const key in doc1) {
+    if (doc1.hasOwnProperty(key) && doc2.hasOwnProperty(key)) {
+      if (doc1[key] !== doc2[key]) {
+        conflicts[key] = [doc1[key], doc2[key]];
+      }
+    }
+  }
+
+  return conflicts;
+}
+
 Router.post("/", bodyParser.json(), async (req, res, next) => {
   const body = req.body;
   body.CommissionPer = body.commissionValue;
@@ -16,56 +47,69 @@ Router.post("/", bodyParser.json(), async (req, res, next) => {
   const filterQuery = body.FilterQuery;
   const commissionValue = body.commissionValue;
 
-  try {
-    // Find all diamonds matching the filter query and get a cursor
-    const cursor = Diamonds.find(filterQuery).lean().cursor();
 
-    let isFirstBatchSaved = false;
-    let bulkUpdateOperations = [];
+  detectConflicts(body).then(
 
-    for await (const doc of cursor) {
-      bulkUpdateOperations.push({
-        updateOne: {
-          filter: { _id: doc._id },
-          update: {
-            $set: {
-              RetailPrice: Math.round((doc.amount + (commissionValue * doc.amount) / 100) / 5) * 5,
-              CommissionPer: commissionValue,
-            },
-          },
-        },
-      });
-
-      if (bulkUpdateOperations.length >= batchLimit) {
-        // Execute bulk write operation when batch size is reached
-        await Diamonds.bulkWrite(bulkUpdateOperations);
-        bulkUpdateOperations = [];
-
-        if (!isFirstBatchSaved) {
-          console.log("First batch saved");
-          isFirstBatchSaved = true;
+    async (conflicts) =>{
+      if(conflicts.length > 0){
+        res.status(201).json({"err" : "Conflict with stored Commission" , conflicts})
+      }else{
+        try {
+          // Find all diamonds matching the filter query and get a cursor
+          const cursor = Diamonds.find(filterQuery).lean().cursor();
+      
+          let isFirstBatchSaved = false;
+          let bulkUpdateOperations = [];
+      
+          for await (const doc of cursor) {
+            bulkUpdateOperations.push({
+              updateOne: {
+                filter: { _id: doc._id },
+                update: {
+                  $set: {
+                    RetailPrice: Math.round((doc.amount + (commissionValue * doc.amount) / 100) / 5) * 5,
+                    CommissionPer: commissionValue,
+                  },
+                },
+              },
+            });
+      
+            if (bulkUpdateOperations.length >= batchLimit) {
+              // Execute bulk write operation when batch size is reached
+              await Diamonds.bulkWrite(bulkUpdateOperations);
+              bulkUpdateOperations = [];
+      
+              if (!isFirstBatchSaved) {
+                console.log("First batch saved");
+                isFirstBatchSaved = true;
+              }
+            }
+          }
+      
+          if (bulkUpdateOperations.length > 0) {
+            // Execute any remaining bulk updates
+            await Diamonds.bulkWrite(bulkUpdateOperations);
+          }
+      
+          // Delete documents matching the filter query
+          await Commission.deleteMany({ FilterQuery: filterQuery });
+      
+          // Create a new Commission document
+          await Commission.create(body);
+      
+          res.status(200).json({ message: "All batches saved" });
+          console.log("Saved");
+      
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ error: "Internal Server Error" });
         }
       }
     }
 
-    if (bulkUpdateOperations.length > 0) {
-      // Execute any remaining bulk updates
-      await Diamonds.bulkWrite(bulkUpdateOperations);
-    }
+  )
 
-    // Delete documents matching the filter query
-    await Commission.deleteMany({ FilterQuery: filterQuery });
 
-    // Create a new Commission document
-    await Commission.create(body);
-
-    res.status(200).json({ message: "All batches saved" });
-    console.log("Saved");
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
 });
 
 
