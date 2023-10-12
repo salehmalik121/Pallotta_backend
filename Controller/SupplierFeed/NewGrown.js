@@ -3,6 +3,8 @@ const DiamondModel = require("../../DB/Schema/DiamondSchema");
 const mongoose = require("mongoose");
 const CPSmapper = require("../functions/CPSmapper");
 const Supplier = require("../../Class/Supplier");
+const ftp = require("basic-ftp");
+const csv = require('csv-parser');
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
@@ -107,23 +109,43 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 exports.MapData = async (req , res)=>{
-    await DiamondModel.deleteMany({"source" : "EcoStar"});
-    axios.get("https://api.ecostar.diamonds:9921/api/v1/StockShare?userid=Pallotta&token=AYDL-2UA0-533B-URPZ-GN4X-VVPY-0TEL").then(async (fetch)=>{
-        const fetchedData = fetch.data.data;
-        const mappedArray = await SchemaMapping(fetchedData);
-        console.log(mappedArray[0]);
-        DiamondModel.insertMany(mappedArray).then(()=>{
-            const SupplierUp = new Supplier("EcoStar");
-            SupplierUp.SyncCommission();
-            res.sendStatus(200);
-        }).catch(err=>{
-            console.log(err);
-            res.status(500).json(err);
-        })
+    // await DiamondModel.deleteMany({"source" : "New Grown"});
 
-    }).catch((err)=>{
-        console.log(err);
-    })
+    const ftpConfig = {
+        host: "ftp.pallotta.co", // Replace with your FTP server address
+        user: "NewGrown@pallotta.co",      // Replace with your FTP username
+        password: "hw]s.5om)d&",  // Replace with your FTP password
+      };
+
+      const client = new ftp.Client();
+      
+      await client.access(ftpConfig);
+
+      const path = '/AssuntaPalotta.csv';
+
+      const fileStream = await client.downloadTo("/AssuntaPalotta.csv" , "/AssuntaPalotta.csv");
+      console.log(fileStream);
+      const jsonArray = [];
+    
+    fileStream.pipe(csv())
+      .on('data', (row) => {
+        jsonArray.push(row);
+      })
+      .on('end', () => {
+        console.log('CSV parsing complete.');
+        res.json(jsonArray);
+      });
+
+        // const mappedArray = await SchemaMapping(fetchedData);
+        // console.log(mappedArray[0]);
+        // DiamondModel.insertMany(mappedArray).then(()=>{
+        //     const SupplierUp = new Supplier("New Grown");
+        //     SupplierUp.SyncCommission();
+        //     res.sendStatus(200);
+        // }).catch(err=>{
+        //     console.log(err);
+        //     res.status(500).json(err);
+        // })
 
 
 }

@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const aadata = require("../../aa.json");
 const { parseNumbers } = require("xml2js/lib/processors");
 const CPSmapper = require("../functions/CPSmapper");
+const Supplier = require("../../Class/Supplier");
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
@@ -52,47 +53,47 @@ const SchemaMapping = async (fetchedData)=>{
 
            
 
-            if(mappedObj.cut === "Excellent"){
+            if(mappedObj.cut === "Excellent" || mappedObj.cut === "EXCELLENT" ){
                 mappedObj.cut = "EX"
             }
 
-            if(mappedObj.cut === "Very Good"){
+            if(mappedObj.cut === "Very Good" || mappedObj.cut === "VERY GOOD"){
                 mappedObj.cut = "VG"
             }
 
-            if(mappedObj.cut === "Good"){
+            if(mappedObj.cut === "Good" || mappedObj.cut === "GOOD" ){
                 mappedObj.cut = "G"
             }
 
             
-            if(mappedObj.cut === "Ideal"){
+            if(mappedObj.cut === "Ideal" || mappedObj.cut === "IDEAL"){
                 mappedObj.cut = "I"
             }
-            if(mappedObj.polish === "Excellent"){
+            if(mappedObj.polish === "Excellent"  || mappedObj.polish === "EXCELLENT"){
                 mappedObj.polish = "EX"
             }
 
-            if(mappedObj.polish === "Very Good"){
+            if(mappedObj.polish === "Very Good" || mappedObj.polish === "VERY GOOD"){
                 mappedObj.polish = "VG"
             }
 
-            if(mappedObj.polish === "Good"){
+            if(mappedObj.polish === "Good" || mappedObj.polish === "GOOD"){
                 mappedObj.polish = "G"
             }
 
             
-            if(mappedObj.polish === "Ideal"){
+            if(mappedObj.polish === "Ideal" || mappedObj.polish === "IDEAL"  ){
                 mappedObj.polish = "I"
             }
-            if(mappedObj.symmetry === "Excellent"){
+            if(mappedObj.symmetry === "Excellent" || mappedObj.symmetry === "EXCELLENT"){
                 mappedObj.symmetry = "EX"
             }
 
-            if(mappedObj.symmetry === "Very Good"){
+            if(mappedObj.symmetry === "Very Good" || mappedObj.symmetry === "VERY GOOD"){
                 mappedObj.symmetry = "VG"
             }
 
-            if(mappedObj.symmetry === "Good"){
+            if(mappedObj.symmetry === "Good" || mappedObj.symmetry === "VERY GOOD"){
                 mappedObj.symmetry = "G"
             }
 
@@ -174,7 +175,10 @@ exports.MapData =  async(req , res)=>{
         const fetchedData = fetch.data;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0]);
-        DiamondModel.insertMany(mappedArray);
+        DiamondModel.insertMany(mappedArray).then(()=>{
+            const SupplierUp = new Supplier("Eco Grown");
+            SupplierUp.SyncCommission();
+        });
         res.status(200);
     }).catch((err)=>{
         console.log(err);
