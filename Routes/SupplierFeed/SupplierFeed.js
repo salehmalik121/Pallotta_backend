@@ -16,7 +16,7 @@ const Rays = require("../../Controller/SupplierFeed/Rays");
 const Anjali = require("../../Controller/SupplierFeed/Anjali");
 const EcoGrown = require("../../Controller/SupplierFeed/EcoGrown");
 const ShreeSuktam = require("../../Controller/SupplierFeed/ShreeSuktam");
-const NewGrown = require("../../Controller/SupplierFeed/NewGrown");
+//const NewGrown = require("../../Controller/SupplierFeed/NewGrown");
 const Router = express.Router();
 
 Router.get("/Jeni" , jeniController.MapData);
@@ -36,6 +36,6 @@ Router.get("/Rays" , Rays.MapData );
 Router.get("/Anjali" , Anjali.MapData );
 Router.get("/EcoGrown" , EcoGrown.MapData );
 Router.get("/ShreeSuktam" , ShreeSuktam.MapData );
-Router.get("/NewGrown" , NewGrown.MapData );
+//Router.get("/NewGrown" , NewGrown.MapData );
 
 module.exports = Router
