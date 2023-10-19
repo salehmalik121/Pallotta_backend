@@ -55,7 +55,7 @@ Router.post("/", bodyParser.json(), async (req, res, next) => {
         res.status(201).json({"err" : "Conflict with stored Commission" , conflicts})
       }else{
         try {
-         
+          // Find all diamonds matching the filter query and get a cursor
           const cursor = Diamonds.find(filterQuery).lean().cursor();
       
           let isFirstBatchSaved = false;
@@ -75,7 +75,7 @@ Router.post("/", bodyParser.json(), async (req, res, next) => {
             });
       
             if (bulkUpdateOperations.length >= batchLimit) {
-              
+              // Execute bulk write operation when batch size is reached
               await Diamonds.bulkWrite(bulkUpdateOperations);
               bulkUpdateOperations = [];
       
@@ -87,14 +87,14 @@ Router.post("/", bodyParser.json(), async (req, res, next) => {
           }
       
           if (bulkUpdateOperations.length > 0) {
-            
+            // Execute any remaining bulk updates
             await Diamonds.bulkWrite(bulkUpdateOperations);
           }
       
-          
+          // Delete documents matching the filter query
           await Commission.deleteMany({ FilterQuery: filterQuery });
       
-          
+          // Create a new Commission document
           await Commission.create(body);
       
           res.status(200).json({ message: "All batches saved" });
