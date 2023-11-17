@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser")
 const jeniController = require("../../Controller/SupplierFeed/jeniController");
 const BrahmaController = require("../../Controller/SupplierFeed/BrahmaController");
 const PureLab = require("../../Controller/SupplierFeed/PureLabController");
@@ -17,6 +18,8 @@ const Anjali = require("../../Controller/SupplierFeed/Anjali");
 const EcoGrown = require("../../Controller/SupplierFeed/EcoGrown");
 const ShreeSuktam = require("../../Controller/SupplierFeed/ShreeSuktam");
 //const NewGrown = require("../../Controller/SupplierFeed/NewGrown");
+const PallottaSingle = require("../../Controller/SupplierFeed/PallottaSingle");
+
 const Router = express.Router();
 
 Router.get("/Jeni" , jeniController.MapData);
@@ -36,6 +39,8 @@ Router.get("/Rays" , Rays.MapData );
 Router.get("/Anjali" , Anjali.MapData );
 Router.get("/EcoGrown" , EcoGrown.MapData );
 Router.get("/ShreeSuktam" , ShreeSuktam.MapData );
+Router.post("/pallottaSingle/:natural/:colored" , bodyParser.json() , PallottaSingle.addSingleDiamond );
+
 //Router.get("/NewGrown" , NewGrown.MapData );
 
 module.exports = Router

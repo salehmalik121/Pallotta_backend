@@ -5,6 +5,7 @@ const aadata = require("../../aa.json");
 const { parseNumbers } = require("xml2js/lib/processors");
 const CPSmapper = require("../functions/CPSmapper");
 const Supplier = require("../../Class/Supplier");
+
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
     await fetchedData.forEach(element => {
@@ -155,6 +156,8 @@ const dataFetching = async (apiLink)=>{
     }).then(async (fetch)=>{
         const fetchedData = fetch.data.data;
         if(fetchedData.length === 0 || fetch.data.next_page_url === null ){
+            const SupplierUp = new Supplier("AARush");
+            SupplierUp.SyncCommission();
             return ;
         }else{
         const mappedArray = await SchemaMapping(fetchedData);

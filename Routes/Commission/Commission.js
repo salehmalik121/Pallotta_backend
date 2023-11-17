@@ -25,16 +25,20 @@ async function detectConflicts(newDocument) {
 
 // Function to compare two objects and find conflicts
 function findConflicts(doc1, doc2) {
+
   const conflicts = {};
 
   for (const key in doc1) {
     if (doc1.hasOwnProperty(key) && doc2.hasOwnProperty(key)) {
+      
+      if(doc1.FilterQuery.natural === doc2.FilterQuery.natural && doc1.FilterQuery.colored === doc2.FilterQuery.colored  ){
       if (doc1[key] !== doc2[key]) {
         conflicts[key] = [doc1[key], doc2[key]];
       }
     }
+    }
   }
-
+  
   return conflicts;
 }
 
