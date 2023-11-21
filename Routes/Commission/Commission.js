@@ -39,7 +39,7 @@ function findConflicts(doc1, doc2) {
     }
   }
   
-  return conflicts;
+  return [];
 }
 
 Router.post("/", bodyParser.json(), async (req, res, next) => {
