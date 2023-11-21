@@ -54,6 +54,10 @@ Router.post("/", bodyParser.json(), async (req, res, next) => {
 
   detectConflicts(body).then(
 
+
+
+    
+
     async (conflicts) =>{
       if(conflicts.length > 0){
         res.status(201).json({"err" : "Conflict with stored Commission" , conflicts})
@@ -96,7 +100,9 @@ Router.post("/", bodyParser.json(), async (req, res, next) => {
           }
       
           // Delete documents matching the filter query
-          await Commission.deleteMany({ FilterQuery: filterQuery });
+          await Commission.deleteMany({ FilterQuery: filterQuery }).then(found=>{
+            console.log(found);
+          });
       
           // Create a new Commission document
           await Commission.create(body);
