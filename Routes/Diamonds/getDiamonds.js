@@ -43,7 +43,7 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
   const query = req.body;
   const pageNumber = parseInt(params.pageNumber) || 1;
   const pageSize = 100;
-
+  console.log(query)
   // params to query
   console.log(params);
   if (params.source) {

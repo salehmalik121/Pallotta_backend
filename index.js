@@ -28,12 +28,15 @@ const SupplierFeed = require("./Routes/SupplierFeed/SupplierFeed");
 const AdminAuth = require("./Routes/Authentication/admin");
 const Diamonds = require("./Routes/Diamonds/getDiamonds");
 const Commission = require("./Routes/Commission/Commission");
+const fileUpload = require("./Routes/UploadFile/uploadFile");
+
 //Routes
 
 app.use("/SupplierFeed" , SupplierFeed);
 app.use("/Auth/Admin" , AdminAuth);
 app.use("/data" , Diamonds);
 app.use("/Commission" ,Commission );
+app.use("/fileUpload" , fileUpload);
 //Connection
 app.listen(port , ()=>{
     console.log("This is Port " + port + " call me to get data :)");

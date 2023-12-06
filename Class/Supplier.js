@@ -22,9 +22,10 @@ class Supplier{
                 const cursor = Diamonds.find({ ...query, "source": this.Supplier }).lean().cursor();
                 
                 for await (const diamond of cursor) {
-                    const cost = parseInt(diamond.amount * percent);
+                    const cost = parseInt(diamond.amount) +  parseInt(diamond.amount * (percent/100));
                     diamond.CommissionPer = percent;
                     diamond.RetailPrice = cost;
+                    console.log(cost);
                     bulkUpdateOperations.push({
                         updateOne: {
                             filter: { _id: diamond._id },
