@@ -9,20 +9,19 @@ class Supplier{
 
 
     SyncCommission = async () => {
-        const batchSize = 100; // Adjust the batch size based on your requirements
-
-        try {
-            const AppliedCommissions = await Commission.find();
-            const bulkUpdateOperations = [];
+        const batchSize = 100;
+        const AppliedCommissions = await Commission.find();
+        const bulkUpdateOperations = [];
     
-            for (const element of AppliedCommissions) {
+        try {
+            await Promise.all(AppliedCommissions.map(async (element) => {
                 const query = element.FilterQuery;
                 const percent = element.CommissionPer;
-                
+    
                 const cursor = Diamonds.find({ ...query, "source": this.Supplier }).lean().cursor();
-                
+    
                 for await (const diamond of cursor) {
-                    const cost = parseInt(diamond.amount) +  parseInt(diamond.amount * (percent/100));
+                    const cost = parseInt(diamond.amount) + parseInt(diamond.amount * (percent / 100));
                     diamond.CommissionPer = percent;
                     diamond.RetailPrice = cost;
                     console.log(cost);
@@ -32,13 +31,13 @@ class Supplier{
                             update: { $set: { CommissionPer: percent, RetailPrice: cost } }
                         }
                     });
-                    
+    
                     if (bulkUpdateOperations.length >= batchSize) {
                         await Diamonds.bulkWrite(bulkUpdateOperations);
                         bulkUpdateOperations.length = 0; // Clear the array
                     }
                 }
-            }
+            }));
     
             if (bulkUpdateOperations.length > 0) {
                 await Diamonds.bulkWrite(bulkUpdateOperations);
@@ -50,6 +49,7 @@ class Supplier{
             console.error('Error syncing commissions:', error);
         }
     };
+    
     
     
 

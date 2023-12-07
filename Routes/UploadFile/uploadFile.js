@@ -12,6 +12,7 @@ const storage = multer.memoryStorage();
 const upload = multer({storage});
 
 Router.post("/natural" , upload.single("excelFile") , async (req , res , next)=>{
+
     const excelBuffer = req.file.buffer;
 
     const workbook = xlsx.read(excelBuffer , {type: "buffer"});
@@ -23,10 +24,10 @@ Router.post("/natural" , upload.single("excelFile") , async (req , res , next)=>
 
     let mappedArray = [];
 
-    data.forEach(async(element)=>{
+    data.map(async(element)=>{
         if(element['Stock #'] != undefined){
         const id = new mongoose.Types.ObjectId(parseInt(element['Stock #']));
-        const mappedObj = {
+        let mappedObj = {
               source : "pallotta",
               lotNo: element["Stock #"],
               stoneId: element['Lab\tReport #'],
@@ -51,7 +52,12 @@ Router.post("/natural" , upload.single("excelFile") , async (req , res , next)=>
 
         }
 
-        mappedObj.shape.toUpperCase()
+        mappedObj.shape.toUpperCase();
+        const allowedColors = ["D", "E", "F", "G", "H", "I", "J"];
+if (!allowedColors.includes(mappedObj.color)) {
+    mappedObj.colored = true;
+}
+
 
         if (mappedObj.clarity == "SI 2 ") {
             mappedObj.clarity = "SI2";
@@ -115,7 +121,7 @@ Router.post("/natural" , upload.single("excelFile") , async (req , res , next)=>
     }
     })
 
-    console.log(mappedArray);
+    
 
 
     const bulkOperations = mappedArray.map(data => {
@@ -129,7 +135,7 @@ Router.post("/natural" , upload.single("excelFile") , async (req , res , next)=>
           },
         };
       });
-      
+      bulkOperations.map(operation => console.log(operation.updateOne));
       DiamondModel.bulkWrite(bulkOperations, { ordered: false })
         .then(result => {
           console.log(result);
@@ -165,7 +171,7 @@ Router.post("/lab" , upload.single("excelFile") , async (req , res , next)=>{
         if(parsedCertNumber == undefined){
             parsedCertNumber = certLink;
         }
-        const mappedObj = {
+        let mappedObj = {
             lotNo: element["Stock #"],
               source : "pallotta",
               stoneId: parsedCertNumber,
@@ -193,6 +199,11 @@ Router.post("/lab" , upload.single("excelFile") , async (req , res , next)=>{
 
 
         mappedObj.shape.toUpperCase()
+
+        const allowedColors = ["D", "E", "F", "G", "H", "I", "J"];
+if (!allowedColors.includes(mappedObj.color)) {
+    mappedObj.colored = true;
+}
 
         switch (mappedObj.clarity) {
             case "SI 2":

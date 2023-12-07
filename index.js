@@ -29,6 +29,7 @@ const AdminAuth = require("./Routes/Authentication/admin");
 const Diamonds = require("./Routes/Diamonds/getDiamonds");
 const Commission = require("./Routes/Commission/Commission");
 const fileUpload = require("./Routes/UploadFile/uploadFile");
+const customerCart = require("./Routes/Users/Cart");
 
 //Routes
 
@@ -37,6 +38,7 @@ app.use("/Auth/Admin" , AdminAuth);
 app.use("/data" , Diamonds);
 app.use("/Commission" ,Commission );
 app.use("/fileUpload" , fileUpload);
+app.use("/user" , customerCart);
 //Connection
 app.listen(port , ()=>{
     console.log("This is Port " + port + " call me to get data :)");

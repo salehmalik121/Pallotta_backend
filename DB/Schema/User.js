@@ -26,6 +26,9 @@ const userSchema = new Schema({
   phoneNumber: {
     type: String
   },
+  cartList : {
+    type : Array
+  },
   // Add more fields as needed
 
   // Timestamps to track when the user was created and last updated
