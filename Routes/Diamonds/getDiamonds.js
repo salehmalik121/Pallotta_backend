@@ -44,6 +44,7 @@ Router.post("/diamonds", bodyParser.json(), async (req, res, next) => {
   const pageNumber = parseInt(params.pageNumber) || 1;
   const pageSize = 100;
   console.log(query)
+  query.RetailPrice = {"$ne" : 0}
   // params to query
   console.log(params);
   if (params.source) {
@@ -119,6 +120,7 @@ Router.get("/Search", async (req, res, next) => {
     const check = parseInt(SearchValue);
     if (isNaN(check)) {
       const query = {
+        RetailPrice : {$ne : 0},
         $or: [
           {
             "source": { $regex: new RegExp(SearchValue, "i") } // Case-insensitive regex

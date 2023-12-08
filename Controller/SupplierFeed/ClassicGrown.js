@@ -2,6 +2,7 @@ const axios = require("axios");
 const DiamondModel = require("../../DB/Schema/DiamondSchema");
 const mongoose = require("mongoose");
 const CPSmapper = require("../functions/CPSmapper");
+const Supplier = require("../../Class/Supplier");
 
 const SchemaMapping = async (fetchedData)=>{
     const mappedArray = [];
@@ -104,6 +105,7 @@ const SchemaMapping = async (fetchedData)=>{
 
 
 exports.MapData =  async(req , res)=>{
+  await DiamondModel.deleteMany({"source" : "Classicgrown"});
     await DiamondModel.deleteMany({"source" : "ClassicGrown"});
     await DiamondModel.deleteMany({"source" : "Classic Grown Colored"});
     for(let i =0 ; i<5 ; i++){
@@ -163,8 +165,19 @@ exports.MapData =  async(req , res)=>{
         const fetchedData = fetch.data.DATA;
         const mappedArray = await SchemaMapping(fetchedData);
         console.log(mappedArray[0]);
-        DiamondModel.create(mappedArray);
-
+        try {
+          await DiamondModel.create(mappedArray);
+        } catch (error) {
+          if (error.code === 11000 || error.code === 11001) {
+            console.log(`Duplicate key error: ${error.message}`);
+          } else {
+            console.error('Error creating data:', error.message);
+          }
+        }
+        const SupplierUp = new Supplier("ClassicGrown");
+        SupplierUp.SyncCommission();
+        const SupplierUp_C = new Supplier("Classic Grown Colored");
+        SupplierUp_C.SyncCommission();
     }).catch((err)=>{
         console.log(err);
     })
