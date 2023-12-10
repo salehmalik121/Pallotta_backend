@@ -135,7 +135,7 @@ if (!allowedColors.includes(mappedObj.color)) {
           },
         };
       });
-      bulkOperations.map(operation => console.log(operation.updateOne));
+      await bulkOperations.map(async(operation) => {await DiamondModel.findOneAndDelete(operation.updateOne.filter)});
       DiamondModel.bulkWrite(bulkOperations, { ordered: false })
         .then(result => {
           console.log(result);
